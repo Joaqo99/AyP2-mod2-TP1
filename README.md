@@ -2,8 +2,7 @@
 
 ## Objetivo
 Desarrollar una herramienta para la predicción del aislamiento acústico a ruido aéreo de
-paramentos simples y homogéneos, a partir de sus características físicas, mediante el
-programa Python.
+paramentos simples y homogéneos, a partir de sus características físicas, mediante Python.
 
 Esta herramienta deberá dar, a partir de unos datos de entrada (ejemplo en la figura 1), en
 forma gráfica y tabular, los valores de Reducción Sonora R, entre las bandas de tercio de
