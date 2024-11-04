@@ -1,0 +1,8 @@
+Esquema GUI:
+
+2 columnas:
+- 10% de alto: Botones
+- 90% de alto: Gráfico
+
+3 filas dentro de la primer columna:
+40% - 30% - 30%
