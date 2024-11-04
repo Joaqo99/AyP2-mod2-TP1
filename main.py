@@ -20,10 +20,29 @@ window.columnconfigure(2, weight=3)  # Métodos de cálculo
 menus_frame = tk.Frame(window, bg="lightgray")
 menus_frame.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
-# Configuración de columnas dentro del frame 0
-menus_frame.columnconfigure(0, weight=4)  # 40% ancho para el primer botón
-menus_frame.columnconfigure(1, weight=3)  # 30% ancho para el segundo botón
-menus_frame.columnconfigure(2, weight=3)  # 30% ancho para el tercer botón
+menus_frame.columnconfigure(0, weight=4)  
+menus_frame.columnconfigure(1, weight=3)
+menus_frame.columnconfigure(2, weight=3)  
+
+menus_frame.grid_propagate(False)
+
+#menú opciones
+options_frame = tk.LabelFrame(menus_frame, text="Opciones", bg="lightgray")
+options_frame.grid(row=0, column=0, sticky="nsew")
+
+materiales_label = tk.Label(options_frame, text="Materiales", bg="lightgray")
+materiales_label.pack()
+
+
+#menú funciones
+functions_frame = tk.LabelFrame(menus_frame, text="Funciones", bg="lightgray")
+functions_frame.grid(row=0, column=1, sticky="nsew")
+
+boton_procesar = tk.Button(functions_frame, text="Procesar")
+boton_exportar = tk.Button(functions_frame, text="Exportar")
+boton_borrar = tk.Button(functions_frame, text="Borrar")
+
+boton_procesar.pack(), boton_exportar.pack(), boton_borrar.pack()
 
 # Frame para el gráfico (fila 1)
 graph_frame = tk.Frame(window, bg="white")
