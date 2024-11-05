@@ -12,37 +12,83 @@ window.rowconfigure(0, weight=2) #menus
 window.rowconfigure(1, weight=8) # gráficos
 
 # Columnas de menus
-window.columnconfigure(0, weight=4)  # Opciones
-window.columnconfigure(1, weight=3)  # Funciones
-window.columnconfigure(2, weight=3)  # Métodos de cálculo
+window.columnconfigure(0, weight=5)  
+window.columnconfigure(1, weight=2)  
+window.columnconfigure(2, weight=1)  
 
 # Frame de Menus
 menus_frame = tk.Frame(window, bg="lightgray")
 menus_frame.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
-menus_frame.columnconfigure(0, weight=4)  
-menus_frame.columnconfigure(1, weight=3)
-menus_frame.columnconfigure(2, weight=3)  
+menus_frame.columnconfigure(0, weight=5)    # Opciones
+menus_frame.columnconfigure(1, weight=2)    # Funciones
+menus_frame.columnconfigure(2, weight=1)    # Métodos de cálculo
 
 menus_frame.grid_propagate(False)
 
+####################
 #menú opciones
 options_frame = tk.LabelFrame(menus_frame, text="Opciones", bg="lightgray")
 options_frame.grid(row=0, column=0, sticky="nsew")
 
-materiales_label = tk.Label(options_frame, text="Materiales", bg="lightgray")
+materiales_label = tk.Label(options_frame, text="Material", bg="lightgray")
 materiales_label.pack()
 
 
+
+######################
 #menú funciones
 functions_frame = tk.LabelFrame(menus_frame, text="Funciones", bg="lightgray")
 functions_frame.grid(row=0, column=1, sticky="nsew")
 
-boton_procesar = tk.Button(functions_frame, text="Procesar")
+functions_frame.columnconfigure(0,weight=1)
+functions_frame.columnconfigure(1,weight=1)
+functions_frame.rowconfigure(0,weight=1)
+functions_frame.rowconfigure(1,weight=1)
+
+
+boton_procesar = tk.Button(functions_frame,  text="Procesar")
 boton_exportar = tk.Button(functions_frame, text="Exportar")
 boton_borrar = tk.Button(functions_frame, text="Borrar")
 
-boton_procesar.pack(), boton_exportar.pack(), boton_borrar.pack()
+boton_procesar.config(fg="black")
+boton_exportar.config(fg="black")
+boton_borrar.config(fg="red")
+
+boton_procesar.grid(row=0, column=0)
+boton_exportar.grid(row=1, column=0)
+boton_borrar.grid(row=1, column=1)
+
+
+###########################
+#Menú de métodos de cálculo
+
+davy = tk.BooleanVar()
+pared_simple = tk.BooleanVar()
+sharp = tk.BooleanVar()
+iso = tk.BooleanVar()
+
+def on_check_button_cambio():
+    pass
+
+methods_frame = tk.LabelFrame(menus_frame, text="Métodos de cálculo", bg="lightgray")
+methods_frame.grid(row=0, column=2, sticky="nsew")
+
+methods_frame.columnconfigure(0,weight=1)
+methods_frame.columnconfigure(1,weight=1)
+methods_frame.rowconfigure(0,weight=1)
+methods_frame.rowconfigure(1,weight=1)
+
+
+davy_check = tk.Checkbutton(methods_frame, text="Davy", variable=davy, bg="lightgray")
+pared_simple_check = tk.Checkbutton(methods_frame, text="Pared Simple", variable=pared_simple, bg="lightgray")
+sharp_check = tk.Checkbutton(methods_frame, text="Sharp", variable=sharp, bg="lightgray")
+iso_check = tk.Checkbutton(methods_frame, text="ISO", variable=iso, bg="lightgray")
+
+davy_check.grid(row=0, column=0, sticky="w")
+pared_simple_check.grid(row=0, column=1, sticky="w")
+sharp_check.grid(row=1, column=0, sticky="w")
+iso_check.grid(row=1, column=1, sticky="w")
 
 # Frame para el gráfico (fila 1)
 graph_frame = tk.Frame(window, bg="white")
