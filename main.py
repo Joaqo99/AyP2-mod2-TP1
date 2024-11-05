@@ -1,3 +1,4 @@
+from tkinter import ttk
 import tkinter as tk
 
 #ventana principal
@@ -8,44 +9,35 @@ window.configure(bg="gray")
 
 
 #Segmentación de contenedores
-window.rowconfigure(0, weight=2) #menus
-window.rowconfigure(1, weight=8) # gráficos
+window.rowconfigure(0, weight=1) #menus
+window.rowconfigure(1, weight=20) # gráficos
 
 # Columnas de menus
 window.columnconfigure(0, weight=5)  
 window.columnconfigure(1, weight=2)  
 window.columnconfigure(2, weight=1)  
 
-# Frame de Menus
-menus_frame = tk.Frame(window, bg="lightgray")
-menus_frame.grid(row=0, column=0, columnspan=3, sticky="nsew")
-
-menus_frame.columnconfigure(0, weight=5)    # Opciones
-menus_frame.columnconfigure(1, weight=2)    # Funciones
-menus_frame.columnconfigure(2, weight=1)    # Métodos de cálculo
-
-menus_frame.grid_propagate(False)
-
 ####################
 #menú opciones
-options_frame = tk.LabelFrame(menus_frame, text="Opciones", bg="lightgray")
+options_frame = tk.LabelFrame(window, text="Opciones", bg="lightgray")
 options_frame.grid(row=0, column=0, sticky="nsew")
 
 materiales_label = tk.Label(options_frame, text="Material", bg="lightgray")
-materiales_label.pack()
+materiales_label.pack(side="left")
 
-
+materiales_menu = ttk.Combobox(options_frame)
+materiales_menu.pack(side="left")
 
 ######################
 #menú funciones
-functions_frame = tk.LabelFrame(menus_frame, text="Funciones", bg="lightgray")
+functions_frame = tk.LabelFrame(window, text="Funciones", bg="lightgray")
 functions_frame.grid(row=0, column=1, sticky="nsew")
+
 
 functions_frame.columnconfigure(0,weight=1)
 functions_frame.columnconfigure(1,weight=1)
 functions_frame.rowconfigure(0,weight=1)
 functions_frame.rowconfigure(1,weight=1)
-
 
 boton_procesar = tk.Button(functions_frame,  text="Procesar")
 boton_exportar = tk.Button(functions_frame, text="Exportar")
@@ -71,7 +63,7 @@ iso = tk.BooleanVar()
 def on_check_button_cambio():
     pass
 
-methods_frame = tk.LabelFrame(menus_frame, text="Métodos de cálculo", bg="lightgray")
+methods_frame = tk.LabelFrame(window, text="Métodos de cálculo", bg="lightgray")
 methods_frame.grid(row=0, column=2, sticky="nsew")
 
 methods_frame.columnconfigure(0,weight=1)
@@ -93,7 +85,6 @@ iso_check.grid(row=1, column=1, sticky="w")
 # Frame para el gráfico (fila 1)
 graph_frame = tk.Frame(window, bg="white")
 graph_frame.grid(row=1, column=0, columnspan=3, sticky="nsew")
-
 
 window.mainloop()
 
