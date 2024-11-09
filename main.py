@@ -2,18 +2,18 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
 # Ventana principal
-window = ttk.Window(themename="flatly")
+window = ttk.Window(themename="superhero")
 window.title("Transmission Loss Calculator")
-window.geometry("1200x700")
+window.geometry("1300x700")
 
 # Segmentación de contenedores
 window.rowconfigure(0, weight=1)  # Menús
 window.rowconfigure(1, weight=20) # Gráficos
 
 # Columnas de menús
-window.columnconfigure(0, weight=5)  
-window.columnconfigure(1, weight=2)  
-window.columnconfigure(2, weight=1)  
+window.columnconfigure(0, minsize=600, weight=2)  
+window.columnconfigure(1, minsize=400, weight=5)  
+window.columnconfigure(2, minsize=300, weight=2)  
 
 ####################
 # Menú opciones
@@ -63,11 +63,13 @@ functions_frame.rowconfigure(0, weight=1)
 functions_frame.rowconfigure(1, weight=1)
 
 # Botones con ttkbootstrap
-boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=5, width=12)
-boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=5, width=12)
-boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=5, width=12)
+boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14)
+boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14)
+boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14)
+boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=3, width=14)
 
 boton_procesar.grid(row=0, column=0, padx=5, pady=5)
+boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
 boton_borrar.grid(row=1, column=1, padx=5, pady=5)
 
