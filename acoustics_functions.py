@@ -100,9 +100,6 @@ plt.tight_layout()
 # Mostrar gráfico
 plt.show()
 
-<<<<<<< HEAD
 
 print("Joaquín")
-=======
 print("Luca")
->>>>>>> 08937c2aadfd786f3863bdf0a1da8733025de599
