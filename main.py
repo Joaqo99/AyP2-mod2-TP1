@@ -82,11 +82,29 @@ boton_procesar.grid(row=0, column=0, padx=5, pady=5)
 
 
 #agregar material
-def agregar_material_command():
+def nuevo_material():
+
+    def agregar_material():
+        nombre = nombre_entry.get()
+        densidad = den_entry.get()
+        ym = ym_entry.get()
+        lf = lf_entry.get()
+        pm = pm_entry.get()
+
+        new_mat_dict = {"Name": nombre,
+               "Den": densidad,
+               "YM": ym,
+               "LF": lf,
+               "PM": pm,
+               }
+        
+        materiales.add_material(new_mat_dict)
+        add_mat_win.destroy()
+
     # Crear ventana emergente
     add_mat_win = ttk.Toplevel(window)
     add_mat_win.title("Agregar Material")
-    add_mat_win.geometry("300x200")
+    add_mat_win.geometry("500x400")
     
     # Etiquetas y campos de entrada para el nuevo material
     nombre_label = ttk.Label(add_mat_win, text="Nombre del Material:")
@@ -94,22 +112,32 @@ def agregar_material_command():
     nombre_entry = ttk.Entry(add_mat_win, width=20)
     nombre_entry.grid(row=0, column=1, padx=10, pady=10)
     
-    densidad_label = ttk.Label(add_mat_win, text="Densidad [kg/m³]:")
-    densidad_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
-    densidad_entry = ttk.Entry(add_mat_win, width=20)
-    densidad_entry.grid(row=1, column=1, padx=10, pady=10)
+    den_label = ttk.Label(add_mat_win, text="Densidad:")
+    den_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+    den_entry = ttk.Entry(add_mat_win, width=20)
+    den_entry.grid(row=1, column=1, padx=10, pady=10)
     
-    espesor_label = ttk.Label(add_mat_win, text="Espesor [mm]:")
-    espesor_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
-    espesor_entry = ttk.Entry(add_mat_win, width=20)
-    espesor_entry.grid(row=2, column=1, padx=10, pady=10)
+    ym_label = ttk.Label(add_mat_win, text="Modulo de Young:")
+    ym_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+    ym_entry = ttk.Entry(add_mat_win, width=20)
+    ym_entry.grid(row=2, column=1, padx=10, pady=10)
+
+    lf_label = ttk.Label(add_mat_win, text="Factor de perdidas:")
+    lf_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+    lf_entry = ttk.Entry(add_mat_win, width=20)
+    lf_entry.grid(row=3, column=1, padx=10, pady=10)
+
+    pm_label = ttk.Label(add_mat_win, text="Moudlo de Poisson:")
+    pm_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+    pm_entry = ttk.Entry(add_mat_win, width=20)
+    pm_entry.grid(row=4, column=1, padx=10, pady=10)
     
     # Botón para confirmar la adición del material
-    confirmar_button = ttk.Button(add_mat_win, text="Agregar", bootstyle=SUCCESS)
-    confirmar_button.grid(row=3, column=0, columnspan=2, pady=10)
+    confirmar_button = ttk.Button(add_mat_win, text="Agregar", bootstyle=SUCCESS, command=agregar_material)
+    confirmar_button.grid(row=5, column=0, columnspan=2, pady=10)
     
 
-boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=agregar_material_command)
+boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
 boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
