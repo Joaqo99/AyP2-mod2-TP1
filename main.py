@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+import materiales
 
 # Ventana principal
 window = ttk.Window(themename="superhero")
@@ -26,12 +27,25 @@ frame_superior.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 frame_inferior = ttk.Frame(options_frame)
 frame_inferior.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
 
+# Menubutton para selección de materiales
 
-materiales_label = ttk.Label(frame_superior, text="Material")
-materiales_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+def seleccion_material(x):
+    pass
 
-materiales_menu = ttk.Combobox(frame_superior)
-materiales_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+selected_material = ttk.StringVar()
+selected_material.set("Material")
+materiales_menu_button = ttk.Menubutton(frame_superior, textvariable=selected_material)
+materiales_menu_button.grid(row=0, column=0, columnspan=2 , padx=5, pady=5)
+
+# Crear menú y agregar opciones
+materiales_menu = ttk.Menu(materiales_menu_button, tearoff=0)
+materiales_menu_button["menu"] = materiales_menu
+
+# Lista de materiales
+materials_list = materiales.get_materials_list()
+for mat in materials_list:
+    materiales_menu.add_radiobutton(label=mat, variable=selected_material, command=lambda mat=mat: seleccion_material(mat), value=mat)
+
 
 
 dimensiones_label = ttk.Label(frame_inferior, text="Dimensiones:", font="-weight bold")

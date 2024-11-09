@@ -45,3 +45,10 @@ def add_material(material_props):
         wb.save()
 
     print("Material agregado")
+
+
+def get_materials_list():
+    materials_table = read_materials_table()
+    materiales_serie = materials_table["Material"]
+    lista_materiales = materiales_serie.values.tolist()
+    return lista_materiales
