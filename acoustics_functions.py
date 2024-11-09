@@ -99,3 +99,5 @@ plt.tight_layout()
 
 # Mostrar gráfico
 plt.show()
+
+print("Luca")
