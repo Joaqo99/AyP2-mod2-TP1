@@ -79,6 +79,7 @@ for i in range(len(f_to)):
 """    
 
 # Modelo Sharp ---------------------------
+
 r_sh_to = []
 
 
@@ -96,6 +97,7 @@ for i in range(len(f_to)):
         r_sh_to.append(None)
 
 #Encuentro las posiciones donde no hay valor y encuentro los maximos y minimos.
+
 posiciones_none = [i for i, valor in enumerate(r_sh_to) if valor is None]
 
 f_mid = []
@@ -105,12 +107,9 @@ f_r_min_pos = min(posiciones_none)
 f_r_max_pos = max(posiciones_none)
 f_r_max_pos += 1
 f_r_min_pos -= 1
-print(f"POSICION: {f_r_max_pos}")
 
 f_r_min = f_to[f_r_min_pos]
-print(f_r_min)
 f_r_max = f_to[f_r_max_pos]
-print(f_r_max)
 
 # Armo listas para graficar interpolación entre puntos
 
@@ -120,6 +119,7 @@ f_mid.append(f_r_max)
 r_mid.append(r_sh_to[f_r_min_pos])
 r_mid.append(r_sh_to[f_r_max_pos])
 
+# -------------------------------------------------------------------------------------------------------------------------
 
 print(f"frecuencias del medio: {f_mid}")
 print(f"frecuencias del medio: {r_mid}")
@@ -138,7 +138,7 @@ plt.figure(figsize=(10, 6))
 plt.plot(frecuencias, reduccion_sonora, marker='o', color='b', linestyle='-', linewidth=2, markersize=6, label='Reducción Sonora')
 
 # Grafico la linea de interpolacion
-plt.plot(f_mid, r_mid, marker='o', color='b', linestyle='-', linewidth=2, markersize=6, label='Reducción Sonora')
+plt.plot(f_mid, r_mid, marker='o', color='b', linestyle='-', linewidth=2, markersize=6)
 
 # Etiquetas y título
 plt.xlabel("Frecuencia [Hz]", fontsize=14)
