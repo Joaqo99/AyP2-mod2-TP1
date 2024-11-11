@@ -30,7 +30,7 @@ def sharp_method(material, l_y, l_x, espesor):
         l_y: float type object. Wall height.
         l_x: float type object. Wall width.
     """
-    t = espesor*1000    #paso el espesor de mm a m
+    t = espesor/1000    #paso el espesor de mm a m
 
     material_props = materiales.get_material_properties(material)
 
