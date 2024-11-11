@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import materiales
 
 # Parámetros--------------------------------------------
 
@@ -160,3 +161,90 @@ plt.show()
 
 print("Joaquín")
 print("Luca")
+
+
+
+
+
+
+
+
+
+
+
+################################
+
+
+
+
+def sharp_method(material, l_y, l_x, espesor):
+    """
+    Calculates TL by Sharp Method. 
+    Input:
+        material: str type object. Material name.
+        espesor: float type object. Wall lenght.
+        l_y: float type object. Wall height.
+        l_x: float type object. Wall width.
+    """
+    t = espesor*1000    #paso el espesor de mm a m
+
+    material_props = materiales.get_material_properties(material)
+
+
+    ro_m = material_props["Densidad"]
+    e = material_props["Módulo de Young"]
+    n_in = material_props["Factor de pérdidas"]
+    poisson = material_props["Módulo Poisson"]
+
+
+    r_sh_to = []
+
+
+    for i in range(len(f_to)):
+        if f_to[i] < (0.5*f_c):
+            r__0 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) - 5.5
+            r_sh_to.append(r__0)
+        elif f_to[i] >= f_c:
+            n_tot = n_in + (m_s/(485*(np.sqrt(f_to[i]))))
+            r__1 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) + 10 * np.log10((2*n_tot*f_to[i])/(np.pi*f_c))
+            r__2 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) - 5.5
+            r_out = min(r__1,r__2)
+            r_sh_to.append(r_out)
+        else:
+            r_sh_to.append(None)
+
+    #Encuentro las posiciones donde no hay valor y encuentro los maximos y minimos.
+
+    posiciones_none = [i for i, valor in enumerate(r_sh_to) if valor is None]
+
+    f_mid = []
+    r_mid = []
+    print(posiciones_none)
+    f_r_min_pos = min(posiciones_none)
+    f_r_max_pos = max(posiciones_none)
+    f_r_max_pos += 1
+    f_r_min_pos -= 1
+
+    f_r_min = f_to[f_r_min_pos]
+    f_r_max = f_to[f_r_max_pos]
+
+    # Armo listas para graficar interpolación entre puntos
+
+    f_mid.append(f_r_min)
+    f_mid.append(f_r_max)
+
+    r_mid.append(r_sh_to[f_r_min_pos])
+    r_mid.append(r_sh_to[f_r_max_pos])
+
+    R_sharp = np.array([])
+
+    R_mid_appended = 0
+    for i in r_sh_to:
+        if i:
+            R_sharp.append(i)
+        else:
+            R_sharp.append(r_mid[R_mid_appended])
+            R_mid_appended += 1
+
+
+    return R_sharp
