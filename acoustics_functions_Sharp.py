@@ -104,10 +104,13 @@ posiciones_none = [i for i, valor in enumerate(r_sh_to) if valor is None]
 f_mid = []
 r_mid = []
 print(posiciones_none)
+
 f_r_min_pos = min(posiciones_none)
 f_r_max_pos = max(posiciones_none)
 f_r_max_pos += 1
 f_r_min_pos -= 1
+print("Valor minimo Mid", f_r_min_pos)
+print("Valor maximo Mid", f_r_max_pos)
 
 f_r_min = f_to[f_r_min_pos]
 f_r_max = f_to[f_r_max_pos]
@@ -120,16 +123,46 @@ f_mid.append(f_r_max)
 r_mid.append(r_sh_to[f_r_min_pos])
 r_mid.append(r_sh_to[f_r_max_pos])
 
-# -------------------------------------------------------------------------------------------------------------------------
 
+R_sharp = []
+
+r_mid = np.linspace(r_sh_to[f_r_min_pos],r_sh_to[f_r_max_pos], f_r_max_pos - f_r_min_pos + 1, endpoint=True)
+r_mid = r_mid [1:-1]
+#f_mid = np.linspace(f_r_min,f_r_max,f_r_max_pos - f_r_min_pos,endpoint=True)
+
+
+print(f"R mid {r_mid}")
+
+print(f"F mid {f_mid}")
+
+
+
+R_sharp = []
+
+R_mid_appended = 0
+for i in r_sh_to:
+    if i != None:
+        R_sharp.append(i)
+    else:
+        R_sharp.append(r_mid[R_mid_appended])
+        R_mid_appended += 1
+
+print(f"NEW Sharp {R_sharp}")
+
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------
+"""
 print(f"frecuencias del medio: {f_mid}")
 print(f"frecuencias del medio: {r_mid}")
 
 print(f"Frecuencia critica = {round(f_c,2)}",f"Frecuencia de densidad = {round(f_d,2)}",f"valores de R: {r_sh_to}")
-
+"""
 # Datos de ejemplo
 frecuencias = f_to  # Frecuencias de bandas de octava en Hz
-reduccion_sonora = r_sh_to  # Valores de reducción sonora en dB
+reduccion_sonora = R_sharp  # Valores de reducción sonora en dB
 
 # Estilo moderno
 sns.set_theme(style="whitegrid")
@@ -139,7 +172,7 @@ plt.figure(figsize=(10, 6))
 plt.plot(frecuencias, reduccion_sonora, marker='o', color='b', linestyle='-', linewidth=2, markersize=6, label='Reducción Sonora')
 
 # Grafico la linea de interpolacion
-plt.plot(f_mid, r_mid, marker='o', color='b', linestyle='-', linewidth=2, markersize=6)
+#plt.plot(f_mid, r_mid, marker='o', color='b', linestyle='-', linewidth=2, markersize=6)
 
 # Etiquetas y título
 plt.xlabel("Frecuencia [Hz]", fontsize=14)
@@ -157,10 +190,6 @@ plt.tight_layout()
 
 # Mostrar gráfico
 plt.show()
-
-
-print("Joaquín")
-print("Luca")
 
 
 
