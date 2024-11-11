@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import materiales
+from acoustics_functions_Sharp import sharp_method
 
 # Ventana principal
 window = ttk.Window(themename="superhero")
@@ -78,10 +79,25 @@ functions_frame.rowconfigure(1, weight=1)
 
 # procesar
 def procesar():
-    pass
+    material = selected_material.get()
+    if sharp.get():
+        #poner los StrVar para los entry de las dimensiones
+        #obtenerlos acá y llamar a sharp_method
+        #plotear el gráfico
+        pass
+    if davy.get():
+        pass
+
+    if iso.get():
+        pass
+
+    if cremer.get():
+        pass
+    
+    #hacer control de errores si no hay nada seleccionado
 
 
-boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14)
+boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14, command=procesar)
 boton_procesar.grid(row=0, column=0, padx=5, pady=5)
 
 
@@ -154,10 +170,10 @@ boton_borrar.grid(row=1, column=1, padx=5, pady=5)
 
 ###########################
 # Menú de métodos de cálculo
-davy = ttk.BooleanVar()
-pared_simple = ttk.BooleanVar()
-sharp = ttk.BooleanVar()
-iso = ttk.BooleanVar()
+davy = ttk.IntVar()
+cremer = ttk.IntVar()
+sharp = ttk.IntVar()
+iso = ttk.IntVar()
 
 methods_frame = ttk.Labelframe(window, text="Métodos de cálculo")
 methods_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=5)
@@ -168,7 +184,7 @@ methods_frame.rowconfigure(0, weight=1)
 methods_frame.rowconfigure(1, weight=1)
 
 davy_check = ttk.Checkbutton(methods_frame, text="Davy", variable=davy)
-pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=pared_simple)
+pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=cremer)
 sharp_check = ttk.Checkbutton(methods_frame, text="Sharp", variable=sharp)
 iso_check = ttk.Checkbutton(methods_frame, text="ISO", variable=iso)
 
