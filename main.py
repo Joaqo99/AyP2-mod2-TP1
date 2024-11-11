@@ -77,6 +77,10 @@ functions_frame.rowconfigure(0, weight=1)
 functions_frame.rowconfigure(1, weight=1)
 
 # procesar
+def procesar():
+    pass
+
+
 boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14)
 boton_procesar.grid(row=0, column=0, padx=5, pady=5)
 

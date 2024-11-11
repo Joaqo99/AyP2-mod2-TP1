@@ -6,20 +6,6 @@ Pendientes:
     - Eventos de checkbuttons (terminar on_check_button_cambio)
 
 
-
-
-
------------------------
-Esquema GUI:
-
-2 columnas:
-- 20% de alto: Botones
-- 80% de alto: Gráfico
-
-3 filas dentro de la primer columna:
-40% - 30% - 30%
-
-
 -----------------------
 Comentarios de mansilla en el video:
 
@@ -33,8 +19,3 @@ Modelos:
 amortiguamiento (perdida) (cremer, iso y davy) no cte. depende de la masa y la frecuencia, hacerlo por tercio de octavas
 Davy copiar y hacer varios .py
 ISO. AnexoB. B.1. hacer formulas y todos los condicionales de abajo
-
-
------------------------
-Preguntas a Mansilla:
-En la consigna solo se especifica filtrar por tercios, es necesario tmb filtrar por octavas o es un extra?
