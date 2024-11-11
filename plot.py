@@ -14,36 +14,40 @@ def plot_R(R_davy=False, R_sharp=False, R_iso=False, R_cremer=False):
         R_iso: array type object. R values by iso method
         R_cremer: array type object. R values by cremer method
     """
+    fig, ax = plt.subplots()
     R_max = 0
+
     if R_davy:
-        plt.semilogx(f_to, R_davy, label="Davy", color="Violet")
+        ax.semilogx(f_to, R_davy, label="Davy", color="Violet")
         R_davy_max = np.max(R_davy)
         if R_davy_max > R_max:
             R_max = R_davy_max
-    
+
     if R_sharp:
-        plt.semilogx(f_to, R_sharp, label="Sharp", color="Red")
+        ax.semilogx(f_to, R_sharp, label="Sharp", color="Red")
         R_sharp_max = np.max(R_sharp)
         if R_sharp_max > R_max:
             R_max = R_sharp_max
-    
+
     if R_iso:
-        plt.semilogx(f_to, R_iso, label="ISO", color="Blue")
+        ax.semilogx(f_to, R_iso, label="ISO", color="Blue")
         R_iso_max = np.max(R_iso)
         if R_iso_max > R_max:
-            R_max = R_iso_max    
+            R_max = R_iso_max
+
     if R_cremer:
-        plt.semilogx(f_to, R_cremer, label="Pared Simple", color="Green")
+        ax.semilogx(f_to, R_cremer, label="Pared Simple", color="Green")
         R_cremer_max = np.max(R_cremer)
         if R_cremer_max > R_max:
             R_max = R_cremer_max
 
-    plt.ylabel("Transmission Loss [dB]")
-    plt.xlabel("Frecuencia [Hz]")
+    ax.set_ylabel("Transmission Loss [dB]")
+    ax.set_xlabel("Frecuencia [Hz]")
+    ax.set_xlim(10, 22000)
+    ax.set_xticks(f_to)
+    ax.set_xticklabels([f'{t}' for t in f_to], rotation=45, ha='right')
+    ax.set_ylim(0, R_max + 10)
+    ax.grid()
+    ax.legend()
 
-    plt.xlim(10, 22000)
-    plt.xticks([t for t in f_to], [f'{t}' for t in f_to])
-    plt.ylim(0, R_max + 10)
-    plt.grid()
-    plt.legend()
-    plt.show()
+    return fig, ax
