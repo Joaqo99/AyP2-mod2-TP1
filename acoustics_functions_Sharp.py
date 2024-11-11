@@ -11,12 +11,7 @@ c_o = 343
 ro_o = 1.18
 #Frecuencias de interés tercio octava (f_to) [Hz]
 f_to = [20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000,2500,3150,4000,5000,6300,8000,10000,12500,16000,20000]
-#longitud de onda [m]
-lon_onda = []
-for i in range(0,len(f_to)-1):
-    f_i = f_to[i]
-    lon_onda_i = round(c_o/f_i,2)
-    lon_onda.append(lon_onda_i)
+
 
 
 
@@ -96,66 +91,8 @@ def sharp_method(material, l_y, l_x, espesor):
     print("valores R2 (fc): ", r_fc)
 
     return f_c, r_sh_to
-    """
 
-    #Encuentro las posiciones donde no hay valor y encuentro los maximos y minimos.
-
-    posiciones_none = [i for i, valor in enumerate(r_sh_to) if valor is None]
-
-    f_mid = []
-    r_mid = []
-
-    #busco el pico antes de la interpolación reemplanzando f = fc/2
-    valor_R_1 = 10 * np.log10(1+((np.pi*m_s*(f_c/2))/(ro_o*c_o))**2) - 5.5
-
-    #busco el último valor antes de q vuelva a sharp reemplazando f = fc
-    r___1 = 10 * np.log10(1+((np.pi*m_s*f_c)/(ro_o*c_o))**2) + 10 * np.log10((2*n_tot*f_c)/(np.pi*f_c))
-    r___2 = 10 * np.log10(1+((np.pi*m_s*f_c)/(ro_o*c_o))**2) - 5.5
-    valor_R_2 = min(r___1,r___2)
-
-    pendiente = (valor_R_2 - valor_R_1)/(f_c/2)
-    b = -(pendiente*f_c/2 - valor_R_1)
-
-
-    f_r_min_pos = min(posiciones_none)
-    f_r_max_pos = max(posiciones_none)
-    f_r_max_pos += 1
-    f_r_min_pos -= 1
-
-    f_r_min = f_to[f_r_min_pos]
-    f_r_max = f_to[f_r_max_pos]
-
-    # Armo listas para graficar interpolación entre puntos
-
-    f_mid.append(f_r_min)
-    f_mid.append(f_r_max)
-
-    r_mid.append(r_sh_to[f_r_min_pos])
-    r_mid.append(r_sh_to[f_r_max_pos])
-    
-
-    R_sharp = []
-
-    #r_mid = np.linspace(r_sh_to[f_r_min_pos],r_sh_to[f_r_max_pos], f_r_max_pos - f_r_min_pos + 1, endpoint=True)
-    f_mid = np.linspace(f_r_min,f_r_max,f_r_max_pos - f_r_min_pos + 1,endpoint=True)
-    r_mid = f_mid*pendiente + b
-    r_mid = r_mid [1:-1]
-
-    R_sharp = []
-
-    R_mid_appended = 0
-    for i in r_sh_to:
-        if i != None:
-            R_sharp.append(i)
-        else:
-            R_sharp.append(r_mid[R_mid_appended])
-            R_mid_appended += 1
-    """
-
-    return R_sharp
-
-
-f_c, R_sharp = sharp_method("Acero", 5, 3, 10)
+f_c, R_sharp = sharp_method("PYL", 6, 4, 12.5)
 
 print(f"Valores aislacion {R_sharp}")
 
