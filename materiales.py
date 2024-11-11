@@ -48,7 +48,14 @@ def add_material(material_props):
 
 
 def get_materials_list():
+    """Returns materials list from database"""
     materials_table = read_materials_table()
     materiales_serie = materials_table["Material"]
     lista_materiales = materiales_serie.values.tolist()
     return lista_materiales
+
+
+def get_material_properties(material):
+    materials_table = read_materials_table()
+    df = materials_table[materials_table["Material"] == material]
+    return df
