@@ -1,6 +1,6 @@
 import numpy as np
-from Sigma_Davy import Sigma
-from Shear_Davy import shear
+import Sigma_Davy
+import Shear_Davy
 
 def Single_leaf_Davy(frequency, density, Young, Poisson, thickness, lossfactor, length, width):
     # Definición de constantes
@@ -31,13 +31,13 @@ def Single_leaf_Davy(frequency, density, Young, Poisson, thickness, lossfactor, 
     
     # Cálculo de G, rad, netatotal, z, y, y tau2
     G = np.sqrt(r)
-    rad = Sigma(G, frequency, length, width)  
+    rad = Sigma_Davy.Sigma(G, frequency, length, width)  
     rad2 = rad ** 2
     netatotal = lossfactor + rad * normal
     z = 2 / netatotal
     y = np.arctan(z) - np.arctan(z * (1 - ratio))
     tau2 = normal2 * rad2 * y / (netatotal * 2 * ratio)
-    tau2 *= shear(frequency, density, Young, Poisson, thickness)  
+    tau2 *= Shear_Davy.shear(frequency, density, Young, Poisson, thickness)  
     
     # Condición para calcular tau
     if frequency < critical_frequency:

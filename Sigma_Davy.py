@@ -1,6 +1,22 @@
 import numpy as np
 
 def Sigma(G, freq, width, length):
+    """
+    Calculates the radiation efficiency of a panel using a formula based on the frequency,
+    panel dimensions, and a given parameter G. The function uses a series of intermediate 
+    calculations to estimate the radiation efficiency of the panel in relation to the sound 
+    frequency.
+
+    Parameters:
+    - G (float): A derived parameter related to the transmission loss and frequency.
+    - freq (float): The frequency of the incident sound wave in Hz.
+    - width (float): The width of the panel in meters (m).
+    - length (float): The length of the panel in meters (m).
+
+    Returns:
+    - rad (float): The radiation efficiency of the panel (dimensionless).
+    """
+    
     # Definición de constantes
     c0 = 343           # Velocidad del sonido [m/s]
     w = 1.3
