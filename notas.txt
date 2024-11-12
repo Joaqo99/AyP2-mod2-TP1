@@ -6,19 +6,16 @@ Pendientes:
     - Eventos de checkbuttons (terminar on_check_button_cambio)
 
 
-
-
-
 -----------------------
-Esquema GUI:
+Comentarios de mansilla en el video:
 
-2 columnas:
-- 20% de alto: Botones
-- 80% de alto: Gráfico
+Si se agregan materiales en el excel aparecerian en el UI
+Indicador de errores, para posibles datos mal ingresados en UI.
 
-3 filas dentro de la primer columna:
-40% - 30% - 30%
+Usar excel tipo plantilla para exportar. solo escribir resultados. 
+el grafico esta fijo, solo lee datos de tabla
 
------------------------
-Preguntas a Mansilla:
-En la consigna solo se especifica filtrar por tercios, es necesario tmb filtrar por octavas o es un extra?
+Modelos:
+amortiguamiento (perdida) (cremer, iso y davy) no cte. depende de la masa y la frecuencia, hacerlo por tercio de octavas
+Davy copiar y hacer varios .py
+ISO. AnexoB. B.1. hacer formulas y todos los condicionales de abajo

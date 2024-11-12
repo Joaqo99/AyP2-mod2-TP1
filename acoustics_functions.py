@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import Funcion_sigma
 # Parámetros--------------------------------------------
 
 #Velocidad del sonido [m/s2]
@@ -21,19 +21,19 @@ for i in range(0,len(f_to)-1):
 # Datos de entrada -------------------------------------
 
 #Espesor del elemento [m]
-t = 0.05
+t = 0.0125
 #Densidad del material [kg/m3]
-ro_m = 2660
+ro_m = 800
 #Ancho del elemento
-l_x = 2
+l_x = 6
 #Alto del elemento
-l_y = 2
+l_y = 4
 #Modulo de Young o modulo de elasticidad
-e = 16*(10**9)
+e = 2*(10**9)
 #Factor de perdidas interno del elemento
-n_in = 2*(10**(-2))
+n_in = 6*(10**(-3))
 #Módulo de pisson del elemento
-poisson = 0.15
+poisson = 0.24
 
 
 # Calculos ---------------------------------------------
@@ -72,13 +72,15 @@ def mod_cremer_fun(f_to, f_c, f_d, m_s):
     
 # Modelo ISO 12354 -----------------------------------------------------
 
+#DEJAR FUNCION MAIN EN ESTE Y DEJAR UN .py APARTE PARA LAS DEMÁS??
+
 #Factor de radiación para ondas de flexión libres
 sigma = [] #El que calculo Pablo
 
 #Numero de onda
 k_o = []
 for i in range(len(f_to)):
-    k_o_i = 2*np.pi*f_to[i]
+    k_o_i = 2*np.pi*f_to[i]/c_o
     k_o.append(k_o_i)
 
 def nabla_fun(k_o, l_x, l_y):
@@ -97,10 +99,9 @@ def sigma_f_fun(nabla, k_o, l_x, l_y):
     '''
     sigma_f =[]
     for i in range(len(f_to)):
-        if sigma[i]<=2:
-            sigma_f_i = 0.5*(np.log(k_o[i]*((l_x*l_y)**(1/2)))-nabla[i])
-        else:
-            sigma_f_i = 2
+        sigma_f_i = 0.5*(np.log(k_o[i]*((l_x*l_y)**(1/2)))-nabla[i])
+        if sigma_f_i > 2:
+            sigma_f_i = 2    
         sigma_f.append(sigma_f_i)    
     return sigma_f
 
@@ -114,17 +115,19 @@ def r_to_iso_fun(sigma, sigma_f, l_x, l_y, f_to):
     l_y: float. height
     f_to: array. frecuency per third octave band
     '''
+
+
     r_to_iso = []
     for i in range(len(f_to)):
         #Factor de transmisión por banda de tercio de octavas
         tau_a = ((2*ro_o*c_o)/(2*np.pi*f_to[i]*m_s))**2
         tau_b = ((sigma[i])**2)/(n_in + (m_s/(485*((f_to[i])**(1/2)))))
-        if f_to[i]<f_c:
+        if f_to[i] > f_c:
             tau = tau_a*(tau_b*(np.pi*f_c/(2*f_to[i])))
             r_i = -10*np.log10(tau)
             r_to_iso.append(r_i)
-        elif f_to[i]>f_c:
-            tau = tau_a*(2*sigma_f + ((l_x+l_y)**2)/(l_x**2+l_y**2)*((f_c/f_to[i])**(1/2))*tau_b)
+        elif f_to[i] < f_c:
+            tau = tau_a*(2*sigma_f[i] + (((l_x+l_y)**2)/(l_x**2+l_y**2))*((f_c/f_to[i])**(1/2))*tau_b)
             r_i = -10*np.log10(tau)
             r_to_iso.append(r_i)
         else:
@@ -132,3 +135,23 @@ def r_to_iso_fun(sigma, sigma_f, l_x, l_y, f_to):
             r_i = -10*np.log10(tau)
             r_to_iso.append(r_i)
     return r_to_iso
+
+
+
+#Ejemplo
+
+nabla = nabla_fun(k_o, 6, 4)
+
+sigmaf = sigma_f_fun(nabla, k_o, 6, 4)
+
+sigma = Funcion_sigma.sigma(f_c, 6, 4)
+
+
+print(f"Ko: {k_o}")
+print(f"Nabla: {nabla}")
+print(f"Sigma F:  {sigmaf}")
+print(f"Sigma:  {sigma}")
+
+R_ISO = r_to_iso_fun(sigma,  sigmaf, 6, 4, f_to)
+
+print(f"R_final: {R_ISO}")
