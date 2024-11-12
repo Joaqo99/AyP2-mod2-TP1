@@ -93,4 +93,7 @@ def sharp_method(material, l_y, l_x, espesor):
 
     return f_c, r_sh_to
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9a6d7f08d851a27149409a68cb316ee29eb934f1
