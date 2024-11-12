@@ -92,39 +92,3 @@ def sharp_method(material, l_y, l_x, espesor):
 
     return f_c, r_sh_to
 
-f_c, R_sharp = sharp_method("PYL", 6, 4, 12.5)
-
-print(f"Valores aislacion {R_sharp}")
-
-# Datos de ejemplo
-frecuencias = f_to  # Frecuencias de bandas de octava en Hz
-reduccion_sonora = R_sharp  # Valores de reducción sonora en dB
-
-# Estilo moderno
-sns.set_theme(style="whitegrid")
-plt.figure(figsize=(10, 6))
-
-# Gráfico de líneas
-plt.plot(frecuencias, reduccion_sonora, marker='o', color='b', linestyle='-', linewidth=2, markersize=6, label='Reducción Sonora')
-
-# Grafico la linea de interpolacion
-#plt.plot(f_mid, r_mid, marker='o', color='b', linestyle='-', linewidth=2, markersize=6)
-
-# Etiquetas y título
-plt.xlabel("Frecuencia [Hz]", fontsize=14)
-plt.ylabel("Reducción Sonora [dB]", fontsize=14)
-plt.title("Reducción Sonora por Bandas de Octava", fontsize=16)
-plt.yscale("linear")  # Cambia a 'log' si necesitas una escala logarítmica
-plt.xscale("log")  # Escala logarítmica en el eje x
-
-bandas_octava = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
-plt.xticks(bandas_octava, labels=bandas_octava, rotation=45)
-
-plt.legend()
-plt.grid(True, linestyle='--', alpha=0.7)
-plt.tight_layout()
-
-# Mostrar gráfico
-plt.show()
-
-
