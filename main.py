@@ -13,6 +13,14 @@ window = ttk.Window(themename="superhero")
 window.title("Transmission Loss Calculator")
 window.geometry("1400x900")
 
+R_values = {
+    "R_sharp": None,
+    "R_davy": None,
+    "R_iso": None,
+    "R_cremer": None
+}
+
+
 canvas = None
 
 # Segmentación de contenedores
@@ -88,47 +96,28 @@ functions_frame.columnconfigure(1, weight=1)
 functions_frame.rowconfigure(0, weight=1)
 functions_frame.rowconfigure(1, weight=1)
 
-# procesar
+
 
 def procesar():
-    global canvas
+    global canvas, R_values
     material = selected_material.get()
     largo = float(largo_entry.get())
     alto = float(alto_entry.get())
     espesor = float(espesor_entry.get())
 
     if sharp.get():
-        f_c, R_sharp = sharp_method(material, alto, largo, espesor)
-        #plotear el gráfico
-        print(R_sharp)
+        f_c, R_values["R_sharp"] = sharp_method(material, alto, largo, espesor)
     else:
-        R_sharp = False
+        R_values["R_sharp"] = None
+    
     if davy.get():
-        f_c, R_davy = davy_method(material, alto, largo, espesor)
+        f_c, R_values["R_davy"] = davy_method(material, alto, largo, espesor)
     else:
-        R_davy = False
+        R_values["R_davy"] = None
 
-    if iso.get():
-        pass
-    else:
-        R_iso = False
-
-    if cremer.get():
-        pass
-    else:
-        R_cremer = False
-
-    if canvas is not None:
-        canvas.get_tk_widget().destroy()
-
-    graph_fig, ax = plot.plot_R(R_sharp=R_sharp, R_cremer=R_cremer, R_iso=R_iso, R_davy=R_davy)
-    canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
+    # Actualizar los datos de las líneas sin recrear el gráfico
+    plot.update_plot(lines, R_values)  # Pasamos las líneas y los nuevos valores de R
     canvas.draw()
-    #toolbar = NavigationToolbar2Tk(canvas, graph_frame, pack_toolbar=False)
-    #toolbar.update()
-    #toolbar.pack()
-
-    canvas.get_tk_widget().pack(expand=True)
 
     #hacer control de errores si no hay nada seleccionado
 
@@ -232,6 +221,12 @@ iso_check.grid(row=1, column=1, sticky="w", padx=5, pady=5)
 # Frame para el gráfico
 graph_frame = ttk.Frame(window, bootstyle="secondary")
 graph_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=10, pady=5)
+
+# Inicializar gráfico y curvas
+graph_fig, ax, lines = plot.initialize_plot()  # Creamos el gráfico sin datos
+canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
+canvas.draw()
+canvas.get_tk_widget().pack(expand=True)
 
 
 window.mainloop()
