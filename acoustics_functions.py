@@ -72,13 +72,15 @@ def mod_cremer_fun(f_to, f_c, f_d, m_s):
     
 # Modelo ISO 12354 -----------------------------------------------------
 
+#DEJAR FUNCION MAIN EN ESTE Y DEJAR UN .py APARTE PARA LAS DEMÁS??
+
 #Factor de radiación para ondas de flexión libres
 sigma = [] #El que calculo Pablo
 
 #Numero de onda
 k_o = []
 for i in range(len(f_to)):
-    k_o_i = 2*np.pi*f_to[i]
+    k_o_i = 2*np.pi*f_to[i]/c_o
     k_o.append(k_o_i)
 
 def nabla_fun(k_o, l_x, l_y):
@@ -113,7 +115,7 @@ def r_to_iso_fun(sigma, sigma_f, l_x, l_y, f_to):
     l_y: float. height
     f_to: array. frecuency per third octave band
     '''
-#AGREGAR N
+
 
     r_to_iso = []
     for i in range(len(f_to)):
