@@ -1,16 +1,17 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import materiales
-from acoustics_functions_Sharp import sharp_method
 import plot
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
+from acoustics_functions_Sharp import sharp_method
+from acoustics_functions_Davy_main import davy_method
 
 
 # Ventana principal
 window = ttk.Window(themename="superhero")
 window.title("Transmission Loss Calculator")
-window.geometry("1400x800")
+window.geometry("1400x900")
 
 canvas = None
 
@@ -103,7 +104,7 @@ def procesar():
     else:
         R_sharp = False
     if davy.get():
-        pass
+        f_c, R_davy = davy_method(material, alto, largo, espesor)
     else:
         R_davy = False
 
@@ -123,8 +124,12 @@ def procesar():
     graph_fig, ax = plot.plot_R(R_sharp=R_sharp, R_cremer=R_cremer, R_iso=R_iso, R_davy=R_davy)
     canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
     canvas.draw()
+    #toolbar = NavigationToolbar2Tk(canvas, graph_frame, pack_toolbar=False)
+    #toolbar.update()
+    #toolbar.pack()
 
     canvas.get_tk_widget().pack(expand=True)
+
     #hacer control de errores si no hay nada seleccionado
 
 
@@ -188,8 +193,8 @@ def nuevo_material():
     confirmar_button.grid(row=5, column=0, columnspan=2, pady=10)
     
 
-#boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
-#boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
+boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
+boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
 boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14)
