@@ -8,8 +8,6 @@ ro_o = 1.18
 #Frecuencias de interés tercio octava (f_to) [Hz]
 f_to = [20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000,2500,3150,4000,5000,6300,8000,10000,12500,16000,20000]
 
-
-#Funcion para obtener sigma
 def sigma(frec_critica, l1, l2):
 
     sigmalist = []
@@ -28,34 +26,33 @@ def sigma(frec_critica, l1, l2):
         if f11 <= (frec_critica/2):
             if f_to[i] >= frec_critica:
                 sigma = sig1
-                if sigma > 2:
-                    sigma = 2
-                sigmalist.append(sigma)
-            elif f_to[i] < frec_critica:
+                
+            else:                    #si f < fc
                 if f_to[i] > frec_critica/2:
                     delta2 = 0
-                elif f_to[i] < f11 < frec_critica/2 and sigma > sig2:
-                    sigma = sig2
-                    if sigma > 2:
-                        sigma = 2
-                    sigmalist.append(sigma)
                 sigma = ((2*(l1+l2)*c_o*delta1)/(l1*l2*frec_critica))+delta2
-        elif f11 > frec_critica/2:
+                
+            if f_to[i] < f11 < frec_critica/2 and sigma > sig2:
+                sigma = sig2
+
+            if sigma > 2:
+                sigma = 2
+            sigmalist.append(sigma)    
+
+                
+        else:    #f11 > frec_critica/2:
             if f_to[i] < frec_critica and sig2 < sig3:
                 sigma = sig2
-                if sigma > 2:
-                    sigma = 2
-                sigmalist.append(sigma)
+                
             elif f_to[i] > frec_critica and sig1 < sig3:
                 sigma = sig1
-                if sigma > 2:
-                    sigma = 2
-                sigmalist.append(sigma)
+
             else:
                 sigma = sig3
-                if sigma > 2:
-                    sigma = 2
-                sigmalist.append(sigma)
+
+            if sigma > 2:
+                sigma = 2
+            sigmalist.append(sigma)    
                 
     return sigmalist
 

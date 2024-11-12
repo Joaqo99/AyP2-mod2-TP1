@@ -146,7 +146,11 @@ sigmaf = sigma_f_fun(nabla, k_o, 6, 4)
 
 sigma = Funcion_sigma.sigma(f_c, 6, 4)
 
-print(f"Nabla {nabla}", f"Sigma_F {sigmaf}")
+
+print(f"Ko: {k_o}")
+print(f"Nabla: {nabla}")
+print(f"Sigma F:  {sigmaf}")
+print(f"Sigma:  {sigma}")
 
 R_ISO = r_to_iso_fun(sigma,  sigmaf, 6, 4, f_to)
 
