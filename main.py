@@ -1,11 +1,18 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import materiales
+from acoustics_functions_Sharp import sharp_method
+import plot
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
 
 # Ventana principal
 window = ttk.Window(themename="superhero")
 window.title("Transmission Loss Calculator")
 window.geometry("1400x800")
+
+canvas = None
 
 # Segmentación de contenedores
 window.rowconfigure(0, weight=1)  # Menús
@@ -33,6 +40,10 @@ def seleccion_material(x):
     pass
 
 selected_material = ttk.StringVar()
+largo_var = ttk.StringVar()
+ancho_var = ttk.StringVar()
+espesor_var = ttk.StringVar()
+
 selected_material.set("Material")
 materiales_menu_button = ttk.Menubutton(frame_superior, textvariable=selected_material)
 materiales_menu_button.grid(row=0, column=0, columnspan=2 , padx=5, pady=5)
@@ -77,11 +88,47 @@ functions_frame.rowconfigure(0, weight=1)
 functions_frame.rowconfigure(1, weight=1)
 
 # procesar
+
 def procesar():
-    pass
+    global canvas
+    material = selected_material.get()
+    largo = float(largo_entry.get())
+    alto = float(alto_entry.get())
+    espesor = float(espesor_entry.get())
+
+    if sharp.get():
+        f_c, R_sharp = sharp_method(material, alto, largo, espesor)
+        #plotear el gráfico
+        print(R_sharp)
+    else:
+        R_sharp = False
+    if davy.get():
+        pass
+    else:
+        R_davy = False
+
+    if iso.get():
+        pass
+    else:
+        R_iso = False
+
+    if cremer.get():
+        pass
+    else:
+        R_cremer = False
+
+    if canvas is not None:
+        canvas.get_tk_widget().destroy()
+
+    graph_fig, ax = plot.plot_R(R_sharp=R_sharp, R_cremer=R_cremer, R_iso=R_iso, R_davy=R_davy)
+    canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
+    canvas.draw()
+
+    canvas.get_tk_widget().pack(expand=True)
+    #hacer control de errores si no hay nada seleccionado
 
 
-boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14)
+boton_procesar = ttk.Button(functions_frame, text="Procesar", bootstyle=PRIMARY, padding=3, width=14, command=procesar)
 boton_procesar.grid(row=0, column=0, padx=5, pady=5)
 
 
@@ -141,8 +188,8 @@ def nuevo_material():
     confirmar_button.grid(row=5, column=0, columnspan=2, pady=10)
     
 
-boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
-boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
+#boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
+#boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
 boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14)
@@ -154,10 +201,10 @@ boton_borrar.grid(row=1, column=1, padx=5, pady=5)
 
 ###########################
 # Menú de métodos de cálculo
-davy = ttk.BooleanVar()
-pared_simple = ttk.BooleanVar()
-sharp = ttk.BooleanVar()
-iso = ttk.BooleanVar()
+davy = ttk.IntVar()
+cremer = ttk.IntVar()
+sharp = ttk.IntVar()
+iso = ttk.IntVar()
 
 methods_frame = ttk.Labelframe(window, text="Métodos de cálculo")
 methods_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=5)
@@ -168,7 +215,7 @@ methods_frame.rowconfigure(0, weight=1)
 methods_frame.rowconfigure(1, weight=1)
 
 davy_check = ttk.Checkbutton(methods_frame, text="Davy", variable=davy)
-pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=pared_simple)
+pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=cremer)
 sharp_check = ttk.Checkbutton(methods_frame, text="Sharp", variable=sharp)
 iso_check = ttk.Checkbutton(methods_frame, text="ISO", variable=iso)
 
@@ -180,5 +227,6 @@ iso_check.grid(row=1, column=1, sticky="w", padx=5, pady=5)
 # Frame para el gráfico
 graph_frame = ttk.Frame(window, bootstyle="secondary")
 graph_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=10, pady=5)
+
 
 window.mainloop()

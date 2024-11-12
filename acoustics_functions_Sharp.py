@@ -30,6 +30,7 @@ def sharp_method(material, l_y, l_x, espesor):
     Returns:
     - f_c (float): The critical frequency (Hz) for the material.
     - r_sh_to (list): A list of transmission loss values (R values) at specific frequencies.
+    
     """
     
     t = espesor/1000    #paso el espesor de mm a m
@@ -92,3 +93,7 @@ def sharp_method(material, l_y, l_x, espesor):
 
     return f_c, r_sh_to
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9a6d7f08d851a27149409a68cb316ee29eb934f1
