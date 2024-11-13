@@ -62,8 +62,3 @@ def cremer_method(material, t_m):
             r = 20 * np.log10(m_s * f_to[i]) - 47
         r_to_cremer.append(r)
     return f_c, r_to_cremer
-
-
-R_cremer = cremer_method("PYL",12.5)
-
-print(R_cremer)

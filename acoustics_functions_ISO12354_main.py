@@ -12,7 +12,7 @@ f_to = [20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250
 
 # Modelo ISO 12354 -----------------------------------------------------
 
-def r_to_iso_fun(material, l_x, l_y, t_m):
+def iso_method(material, l_x, l_y, t_m):
     """
     Calculates the sound reduction index (R) based on ISO 12354.
 
