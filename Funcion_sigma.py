@@ -1,12 +1,12 @@
 import numpy as np
 
+
 #Velocidad del sonido [m/s2]
 c_o = 343
 #Densidad del aire 
 ro_o = 1.18
 #Frecuencias de interés tercio octava (f_to) [Hz]
 f_to = [20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000,2500,3150,4000,5000,6300,8000,10000,12500,16000,20000]
-
 
 def sigma(frec_critica, l1, l2):
 
@@ -17,6 +17,10 @@ def sigma(frec_critica, l1, l2):
     f11 = (((c_o)**2)/(4*frec_critica))*((1/(l1**2))+(1/(l2**2)))
 
     for i in range(len(f_to)):
+        print("")
+        print(f"Frecuencia: {f_to[i]}")
+        print(f"Frecuencia crítica: {frec_critica}")
+        print(f"F11: {f11}")
 
         sig1 = 1/np.sqrt(1-(frec_critica/(f_to[i])))
         sig2 = 4*l1*l2*((f_to[i])/c_o)**2
@@ -56,48 +60,27 @@ def sigma(frec_critica, l1, l2):
                 sigma = 2
             sigmalist.append(sigma)    
     
+        print(f"Sigma 1: {sig1}")
+        print(f"------------------------------")
+        print(f"Sigma 2: {sig2}")
+        print(f"------------------------------")
+        print(f"Sigma 3: {sig3}")
+        print(f"------------------------------")
+        print(f"Lambda: {lmda}")
+        print(f"------------------------------")
+        print(f"Delta 1: {delta1}")
+        print(f"------------------------------")
+        print(f"Delta 2: {delta2}")
+        print(f"------------------------------")
+
+
     return sigmalist
 
-def nabla_fun(k_o, l_x, l_y):
-    """
-    Calculates the 'nabla' parameter based on geometrical and wave properties.
-
-    Parameters:
-    - k_o (list or array): Wave numbers corresponding to specific frequencies.
-    - l_x (float): The length of the material in the x-direction (meters).
-    - l_y (float): The length of the material in the y-direction (meters).
-
-    Returns:
-    - nabla (list): A list of 'nabla' values, calculated for each wave number in `k_o`.
-    """
-    nabla = []
-    for i in range(len(f_to)):
-        nabla_i = -0.964 - (0.5+(l_y/(np.pi*l_x)))*np.log(l_y/l_x) + ((5*l_y)/(2*np.pi*l_x)) - (1/(4*np.pi*l_x*l_y*(k_o[i]**2)))
-        nabla.append(nabla_i)
-    return nabla
-
-def sigma_f_fun(nabla, k_o, l_x, l_y):
-    """
-    Calculates the 'nabla' parameter based on geometrical and wave properties.
-
-    Parameters:
-    - k_o (list or array): Wave numbers corresponding to specific frequencies.
-    - l_x (float): The length of the material in the x-direction (meters).
-    - l_y (float): The length of the material in the y-direction (meters).
-
-    Returns:
-    - nabla (list): A list of 'nabla' values, calculated for each wave number in `k_o`.
-    """
-    sigma_f =[]
-    for i in range(len(f_to)):
-        sigma_f_i = 0.5*(np.log(k_o[i]*((l_x*l_y)**(1/2)))-nabla[i])
-        if sigma_f_i > 2:
-            sigma_f_i = 2    
-        sigma_f.append(sigma_f_i)    
-    return sigma_f
+#Pruebas
 
 
-
+sig = sigma(3185,6,4)
+print(sig)
                     
                     
                  
