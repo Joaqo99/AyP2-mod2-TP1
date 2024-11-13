@@ -190,7 +190,21 @@ boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDAR
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
 
 #borrar
-boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=3, width=14)
+
+def borrar():
+    # Llamar a la función clear_plot para borrar las líneas del gráfico
+    plot.clear_plot(lines)
+    
+    # Limpiar las entradas de largo, alto y espesor
+    largo_entry.delete(0, "end")
+    alto_entry.delete(0, "end")
+    espesor_entry.delete(0, "end")
+    selected_material.set("Material")
+
+    # Actualizar el gráfico
+    canvas.draw()
+
+boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=3, width=14, command=borrar)
 boton_borrar.grid(row=1, column=1, padx=5, pady=5)
 
 ###########################

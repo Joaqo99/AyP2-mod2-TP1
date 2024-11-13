@@ -19,13 +19,11 @@ def initialize_plot():
 
     ax.set_xlabel("Frecuencia [Hz]")
     ax.set_ylabel("Transmission Loss [dB]")
+    ax.set_ylim(0, 100)
     ax.set_xlim(20, 21000)
     ax.set_xticks(f_to)
     ax.set_xticklabels([f'{t}' for t in f_to], rotation=45, ha='right', fontsize=8)
     ax.grid(linewidth=0.2)
-    
-
-    ax.legend()
     
     # Retornar la figura, los ejes y las líneas
     return fig, ax, {"R_davy": line_davy, "R_sharp": line_sharp, "R_iso": line_iso, "R_cremer": line_cremer}
@@ -57,3 +55,21 @@ def update_plot(lines, R_values):
     if all_values:
         R_max = max(np.max(v) for v in all_values)
         lines["R_davy"].axes.set_ylim(0, R_max + 10)
+
+    ax = lines["R_davy"].axes
+    ax.legend([line for line, data in zip(lines.values(), R_values.values()) if data is not None], 
+              [label for label, data in zip(lines.keys(), R_values.values()) if data is not None])
+
+
+def clear_plot(lines):
+    # Borrar los datos de cada línea
+    for line in lines.values():
+        line.set_data([], [])
+
+    # Eliminar la leyenda actual si existe
+    ax = list(lines.values())[0].axes
+    if ax.get_legend() is not None:
+        ax.get_legend().remove()
+        ax.set_ylim(0, 100)
+    # Redibujar el gráfico sin datos y sin leyenda
+    ax.figure.canvas.draw()
