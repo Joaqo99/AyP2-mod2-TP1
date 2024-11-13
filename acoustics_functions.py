@@ -155,3 +155,6 @@ print(f"Sigma:  {sigma}")
 R_ISO = r_to_iso_fun(sigma,  sigmaf, 6, 4, f_to)
 
 print(f"R_final: {R_ISO}")
+print("--------------------")
+print(f_to[17])
+print(R_ISO[17])
