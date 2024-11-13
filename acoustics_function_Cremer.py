@@ -50,24 +50,20 @@ def cremer_method(material, t_m):
     f_d = (e/(2*np.pi*ro_m))*((m_s/b)**(1/2))
 
     r_to_cremer = []
-    print(t, m_s)
+
     for i in range(len(f_to)):
         n_tot = n_in + (m_s / (485 * (f_to[i] ** (1 / 2))))
         if f_to[i] < f_c:
             r = 20 * np.log10(m_s * f_to[i]) - 47
         elif f_c <= f_to[i] < f_d:
             r = (20 * np.log10(m_s * f_to[i]) - 10 * np.log10((np.pi) / (4 * n_tot)) 
-                 + 10 * np.log10(f_to[i] / f_c) - 10 * np.log10(f_c / (f_to[i] - f_c)) - 47)
+                 + 10 * np.log10(f_to[i] / f_c) + 10*np.log10(1-(f_c/f_to[i])) - 47)
         else:  # Esto cubre f_to[i] >= f_d
             r = 20 * np.log10(m_s * f_to[i]) - 47
         r_to_cremer.append(r)
-        print("Frecuencia:", f_to[i], "R:", r)
     return f_c, r_to_cremer
 
 
 R_cremer = cremer_method("PYL",12.5)
 
-print("Material")
-print(materiales.get_material_properties("PYL"))
-print("Modelo de Cremer")
 print(R_cremer)
