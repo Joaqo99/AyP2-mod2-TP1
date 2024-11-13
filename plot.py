@@ -20,7 +20,7 @@ def initialize_plot():
     ax.set_xlabel("Frecuencia [Hz]")
     ax.set_ylabel("Transmission Loss [dB]")
     ax.set_ylim(0, 100)
-    ax.set_xlim(20, 21000)
+    ax.set_xlim(20, 20000)
     ax.set_xticks(f_to)
     ax.set_xticklabels([f'{t}' for t in f_to], rotation=45, ha='right', fontsize=8)
     ax.grid(linewidth=0.2)
@@ -28,38 +28,46 @@ def initialize_plot():
     # Retornar la figura, los ejes y las líneas
     return fig, ax, {"R_davy": line_davy, "R_sharp": line_sharp, "R_iso": line_iso, "R_cremer": line_cremer}
 
-def update_plot(lines, R_values):
-    # Actualizar los datos de cada línea según los valores de R disponibles
-    if R_values["R_davy"] is not None:
-        lines["R_davy"].set_data(f_to, R_values["R_davy"])
-    else:
-        lines["R_davy"].set_data([], [])
+def add_critical_frequency(ax, f_c):
+    # Borrar la línea de frecuencia crítica existente si la hay
+    for line in ax.get_lines():
+        if line.get_label() == "Frecuencia Crítica":
+            line.remove()
     
-    if R_values["R_sharp"] is not None:
-        lines["R_sharp"].set_data(f_to, R_values["R_sharp"])
-    else:
-        lines["R_sharp"].set_data([], [])
+    # Dibujar una nueva línea en la frecuencia crítica
+    critical_line = ax.axvline(x=f_c, color="#aaa", linestyle="--", label="Frecuencia Crítica")
     
-    if R_values["R_iso"] is not None:
-        lines["R_iso"].set_data(f_to, R_values["R_iso"])
-    else:
-        lines["R_iso"].set_data([], [])
-    
-    if R_values["R_cremer"] is not None:
-        lines["R_cremer"].set_data(f_to, R_values["R_cremer"])
-    else:
-        lines["R_cremer"].set_data([], [])
+    # Actualizar la leyenda para mostrar solo líneas con datos
+    update_legend(ax)
+    ax.figure.canvas.draw()
 
+def update_legend(ax):
+    # Mostrar solo las líneas con datos en la leyenda
+    lines_with_data = [line for line in ax.get_lines() if len(line.get_data()[0]) > 0]
+    labels_with_data = [line.get_label() for line in lines_with_data]
+    ax.legend(lines_with_data, labels_with_data)
+
+def update_plot(lines, R_values, f_c=None):
+    # Actualizar los datos de cada línea según los valores de R disponibles
+    for key, line in lines.items():
+        if R_values[key] is not None:
+            line.set_data(f_to, R_values[key])
+        else:
+            line.set_data([], [])
+    
     # Ajustar el eje Y para que muestre el rango adecuado
     all_values = [v for v in R_values.values() if v is not None]
     if all_values:
         R_max = max(np.max(v) for v in all_values)
-        lines["R_davy"].axes.set_ylim(0, R_max + 10)
+        lines["R_davy"].axes.set_ylim(0, R_max + 10) 
+    
+    # Actualizar la leyenda solo para las líneas que tienen datos
+    ax = list(lines.values())[0].axes
+    update_legend(ax)
 
-    ax = lines["R_davy"].axes
-    ax.legend([line for line, data in zip(lines.values(), R_values.values()) if data is not None], 
-              [label for label, data in zip(lines.keys(), R_values.values()) if data is not None])
-
+    # Agregar la línea de frecuencia crítica si se proporciona
+    if f_c is not None:
+        add_critical_frequency(ax, f_c)
 
 def clear_plot(lines):
     # Borrar los datos de cada línea
@@ -70,6 +78,12 @@ def clear_plot(lines):
     ax = list(lines.values())[0].axes
     if ax.get_legend() is not None:
         ax.get_legend().remove()
-        ax.set_ylim(0, 100)
+    ax.set_ylim(0, 100)
+
+    # Borrar la línea de frecuencia crítica si existe
+    for line in ax.get_lines():
+        if line.get_label() == "Frecuencia Crítica":
+            line.remove()
+    
     # Redibujar el gráfico sin datos y sin leyenda
     ax.figure.canvas.draw()

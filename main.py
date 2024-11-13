@@ -20,6 +20,7 @@ R_values = {
     "R_cremer": None
 }
 
+f_c = None
 
 canvas = None
 
@@ -116,7 +117,7 @@ def procesar():
         R_values["R_davy"] = None
 
     # Actualizar los datos de las líneas sin recrear el gráfico
-    plot.update_plot(lines, R_values)  # Pasamos las líneas y los nuevos valores de R
+    plot.update_plot(lines, R_values, f_c)  # Pasamos las líneas y los nuevos valores de R
     canvas.draw()
 
     #hacer control de errores si no hay nada seleccionado
