@@ -18,79 +18,7 @@ for i in range(0,len(f_to)-1):
     lon_onda_i = round(c_o/f_i,2)
     lon_onda.append(lon_onda_i)
 
-
-# Datos de entrada -------------------------------------
-
-#Espesor del elemento [m]
-t = 0.0125
-#Densidad del material [kg/m3]
-ro_m = 800
-#Ancho del elemento
-l_x = 6
-#Alto del elemento
-l_y = 4
-#Modulo de Young o modulo de elasticidad
-e = 2*(10**9)
-#Módulo de pisson del elemento
-poisson = 0.24
-
-
 # Calculos ---------------------------------------------
-
-#Masa superficial del material [kg/m2]
-m_s = ro_m*t
-#Superficie del elemento
-s = l_x*l_y
-#Rigidez
-b = (e*(t**3))/(12*(1-(poisson**2)))
-#Frecuencia crítica
-f_c = ((c_o**2)/(2*np.pi))*((m_s/b)**(1/2))
-#Frecuencia densidad
-f_d = (e/(2*np.pi*ro_m))*((m_s/b)**(1/2))
-
-#Modelo de Cremer - Ley de masa--------------------------------------
-
-def cremer_method(material):
-    """
-    Calculates the critical frequency and transmission loss (R values) for a material based on
-    the Cremer method, used for estimating sound insulation properties of a material.
-
-    Parameters:
-    - material (str): The name of the material (e.g., 'Concrete', 'Wood', etc.).
-    
-    Returns:
-    - f_c (float): The critical frequency (Hz) for the material.
-    - r_cremer_to (list): A list of transmission loss values (R values) at specific frequencies.
-    
-    """
-        
-    material_props = materiales.get_material_properties(material)
-    
-    n_in = float(material_props["Factor de pérdidas"])
-    m_s = float(material_props["Densidad"]*t)
-
-    r_to_cremer = []
-
-    for i in range(len(f_to)):
-        if f_to[i]<f_c:
-            r = 20*np.log10(m_s*f_to[i]) - 47
-            r_to_cremer.append(r)
-        elif f_to[i]>f_c and f_d>f_to[i]:
-            n_tot = n_in + (m_s/(485*(f_to[i]**(1/2))))
-            r_2 = 20*np.log10(m_s*f_to[i]) - 10*np.log10((np.pi)/(4*n_tot)) + 10*np.log10(f_to[i]/f_c) - 10*np.log10(f_c/(f_to[i]-f_c)) - 47
-            r_to_cremer.append(r_2)
-        else :
-            r_3 = 20*np.log10(m_s*f_to[i]) - 47
-            r_to_cremer.append(r_3)
-    return f_c, r_to_cremer
-    
-    
-# Modelo ISO 12354 -----------------------------------------------------
-
-#DEJAR FUNCION MAIN EN ESTE Y DEJAR UN .py APARTE PARA LAS DEMÁS??
-
-#Factor de radiación para ondas de flexión libres
-sigma = [] #El que calculo Pablo
 
 #Numero de onda
 k_o = []
@@ -98,10 +26,13 @@ for i in range(len(f_to)):
     k_o_i = 2*np.pi*f_to[i]/c_o
     k_o.append(k_o_i)
 
+# Modelo ISO 12354 -----------------------------------------------------
+
 def nabla_fun(k_o, l_x, l_y):
     '''
     nabla
     '''
+        
     nabla = []
     for i in range(len(f_to)):
         nabla_i = -0.964 - (0.5+(l_y/(np.pi*l_x)))*np.log(l_y/l_x) + ((5*l_y)/(2*np.pi*l_x)) - (1/(4*np.pi*l_x*l_y*(k_o[i]**2)))
@@ -120,18 +51,37 @@ def sigma_f_fun(nabla, k_o, l_x, l_y):
         sigma_f.append(sigma_f_i)    
     return sigma_f
 
-def r_to_iso_fun(sigma, sigma_f, l_x, l_y, f_to):
+def r_to_iso_fun(material, sigma, sigma_f, l_x, l_y, t_m):
     '''
-    Calculates the R by ISO12354
+    Calculates the critical frequency and transmission loss (R values) for a material based on
+    the ISO 12354 method, used for estimating sound insulation properties of a material.
+    
+    Parameters:
     sigma: array. free bending waves radiation factor
     sigma_f: array. forced bending waves radiation factor
     n_tot: array. total loss factor
     l_x: float. width
     l_y: float. height
     f_to: array. frecuency per third octave band
+
+    Returns:
+    - f_c (float): The critical frequency (Hz) for the material.
+    - r_iso_to (list): A list of transmission loss values (R values) at specific frequencies.
     '''
+    material_props = materiales.get_material_properties(material)
+    
+    n_in = float(material_props["Factor de pérdidas"])
+    ro_m = float(material_props["Densidad"])
+    e = float(material_props["Módulo de Young"])
+    poisson = float(material_props["Módulo Poisson"])
+    t = t_m/1000
+    m_s = ro_m*t
 
-
+    #Rigidez
+    b = (e*(t**3))/(12*(1-(poisson**2)))
+    #Frecuencia crítica
+    f_c = ((c_o**2)/(2*np.pi))*((m_s/b)**(1/2))
+    
     r_to_iso = []
     for i in range(len(f_to)):
         #Factor de transmisión por banda de tercio de octavas
@@ -149,11 +99,24 @@ def r_to_iso_fun(sigma, sigma_f, l_x, l_y, f_to):
             tau = tau_a*((tau_b*np.pi)/2)
             r_i = -10*np.log10(tau)
             r_to_iso.append(r_i)
-    return r_to_iso
+    print("Frecuencia", f_to[i], "R", r_i)
+    return f_c, r_to_iso
 
 
 
 #Ejemplo
+material_props = materiales.get_material_properties("PYL")
+t_m = 12.5    
+n_in = float(material_props["Factor de pérdidas"])
+ro_m = float(material_props["Densidad"])
+e = float(material_props["Módulo de Young"])
+poisson = float(material_props["Módulo Poisson"])
+t = t_m/1000
+m_s = ro_m*t
+#Rigidez
+b = (e*(t**3))/(12*(1-(poisson**2)))
+#Frecuencia crítica
+f_c = ((c_o**2)/(2*np.pi))*((m_s/b)**(1/2))
 
 nabla = nabla_fun(k_o, 6, 4)
 
@@ -167,14 +130,5 @@ print(f"Nabla: {nabla}")
 print(f"Sigma F:  {sigmaf}")
 print(f"Sigma:  {sigma}")
 
-#R_ISO = r_to_iso_fun(sigma,  sigmaf, 6, 4, f_to)
-R_cremer = cremer_method("PYL")
-#print(f"R_final: {R_ISO}")
-print("--------------------")
-print(f_to[17])
-#print(R_ISO[17])
-
-print("Material")
-print(materiales.get_material_properties("PYL"))
-print("Modelo de Cremer", f_c, f_d)
-print(R_cremer)
+R_ISO = r_to_iso_fun("PYL", sigma,  sigmaf, 6, 4, 12.5)
+print(f"R_final: {R_ISO}")
