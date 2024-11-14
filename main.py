@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from ttkbootstrap.dialogs import Messagebox
 import materiales
 import plot
 import export
@@ -26,6 +27,70 @@ R_values = {
 f_c = None
 
 canvas = None
+
+def reset_entry_styles():
+    largo_entry.configure(bootstyle="default")
+    alto_entry.configure(bootstyle="default")
+    espesor_entry.configure(bootstyle="default")
+
+
+def show_error_message(message):
+    # Crear la ventana de error
+    error_win = ttk.Toplevel(window)
+    error_win.title("Error")
+    error_win.geometry("300x150")  # Tamaño de la ventana de error
+
+    # Centrar la ventana en la pantalla
+    error_win.update_idletasks()  # Asegurarse de que las dimensiones están actualizadas
+    screen_width = error_win.winfo_screenwidth()
+    screen_height = error_win.winfo_screenheight()
+    x = (screen_width - error_win.winfo_width()) // 2
+    y = (screen_height - error_win.winfo_height()) // 2
+    error_win.geometry(f"+{x}+{y}")
+
+    # Configuración de contenido en la ventana de error
+    error_label = ttk.Label(error_win, text=message, wraplength=250, bootstyle="danger")
+    error_label.pack(pady=20)
+
+    ok_button = ttk.Button(error_win, text="Aceptar", command=error_win.destroy)
+    ok_button.pack(pady=10)
+
+    # Hacer que la ventana sea modal para evitar interacciones con la ventana principal
+    error_win.transient(window)  # Indicar que es hija de la ventana principal
+    error_win.grab_set()
+    window.wait_window(error_win)  # Esperar hasta que la ventana de error se cierre
+
+
+def validate_inputs():
+    reset_entry_styles()
+    valid = True
+    # Verificar si se ha seleccionado un material
+    if selected_material.get() == "Material":
+        show_error_message("Seleccione un material.")
+        valid = False
+    
+    # Verificar si las dimensiones son válidas
+    try:
+        largo = float(largo_entry.get())
+        alto = float(alto_entry.get())
+        espesor = float(espesor_entry.get())
+        if largo <= 0 or alto <= 0 or espesor <= 0:
+            raise ValueError
+    except ValueError:
+        show_error_message("Ingrese dimensiones válidas.")
+        largo_entry.configure(bootstyle="danger")  # Resaltar campo en rojo
+        alto_entry.configure(bootstyle="danger")
+        espesor_entry.configure(bootstyle="danger")
+        valid = False
+    
+    # Verificar si al menos un método de cálculo está seleccionado
+    if not (davy.get() or sharp.get() or iso.get() or cremer.get()):
+        show_error_message("Seleccione al menos un método de cálculo.")
+        valid = False
+
+    return valid
+
+
 
 # Segmentación de contenedores
 window.rowconfigure(0, weight=1)  # Menús
@@ -101,6 +166,10 @@ functions_frame.rowconfigure(1, weight=1)
 
 def procesar():
     global canvas, R_values
+
+    if not validate_inputs():
+        return
+
     material = selected_material.get()
     largo = float(largo_entry.get())
     alto = float(alto_entry.get())
@@ -141,22 +210,35 @@ boton_procesar.grid(row=0, column=0, padx=5, pady=5)
 def nuevo_material():
 
     def agregar_material():
-        nombre = nombre_entry.get()
-        densidad = den_entry.get()
-        ym = ym_entry.get()
-        lf = lf_entry.get()
-        pm = pm_entry.get()
-
-        new_mat_dict = {"Name": nombre,
-               "Den": densidad,
-               "YM": ym,
-               "LF": lf,
-               "PM": pm,
-               }
-        
-        materiales.add_material(new_mat_dict)
-        materiales_menu.add_radiobutton(label=nombre, variable=selected_material, value=nombre)
-        add_mat_win.destroy()
+        try:
+            # Obtener y validar los valores ingresados
+            nombre = nombre_entry.get()
+            densidad = float(den_entry.get())
+            ym = float(ym_entry.get())
+            lf = float(lf_entry.get())
+            pm = float(pm_entry.get())
+            
+            if not nombre:
+                raise ValueError("Ingrese un nombre válido.")
+            
+            # Si la validación es exitosa, se crea el diccionario y se añade el material
+            new_mat_dict = {
+                "Name": nombre,
+                "Den": densidad,
+                "YM": ym,
+                "LF": lf,
+                "PM": pm,
+            }
+            
+            materiales.add_material(new_mat_dict)
+            materiales_menu.add_radiobutton(label=nombre, variable=selected_material, value=nombre)
+            
+            # Cerrar la ventana solo si todo es válido
+            add_mat_win.destroy()
+            
+        except ValueError:
+            # Mostrar mensaje de error si hay valores inválidos
+            show_error_message("Datos faltantes o inválidos para el material.")
 
     # Crear ventana emergente
     add_mat_win = ttk.Toplevel(window)
@@ -199,12 +281,19 @@ boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
 def exportar():
+
+    if not any(R_values.values()):
+        show_error_message("Realice un cálculo antes de exportar.")
+        return
+
     material = selected_material.get()
     largo = float(largo_entry.get())
     alto = float(alto_entry.get())
     espesor = float(espesor_entry.get())
 
     export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
+
+    mb = Messagebox.yesno("Datos exportados. ∖nDesea realizar informe?")
 
 boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14, command=exportar)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
@@ -225,6 +314,11 @@ def borrar():
     iso.set(0)
     cremer.set(0)
     sharp.set(0)
+
+    R_values["R_sharp"] = None
+    R_values["R_davy"] = None
+    R_values["R_iso"] = None
+    R_values["R_cremer"] = None
 
     # Actualizar el gráfico
     canvas.draw()

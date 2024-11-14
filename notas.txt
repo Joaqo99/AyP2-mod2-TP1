@@ -8,8 +8,16 @@ Lista de posibles errores:
         - O que cualquiera de esos datos sean inválidos
     - Querer exportar y que no se haya realizado ningún cálculo
     - Datos faltantes o inválidos cuando se carga se carga un nuevo material
-    
 
+
+
+
+
+Correcciones a realizar:
+    - Cantidad de mensajes de error
+    - Que todas las ventanas emergentes aparezcan en el centro de la pantalla
+    - Realizar informe Rw
+    - En lo posible hacer ejecutable
 
 
 
