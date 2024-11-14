@@ -14,8 +14,6 @@ Lista de posibles errores:
 
 
 Correcciones a realizar:
-    - Cantidad de mensajes de error
-    - Que todas las ventanas emergentes aparezcan en el centro de la pantalla
     - Realizar informe Rw
     - En lo posible hacer ejecutable
 

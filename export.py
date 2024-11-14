@@ -17,7 +17,15 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         - f_c: float type object. 
     """
 
+    if " " in material:
+        material_splited = material.rsplit(" ")
+        material = ""
+        for i in material_splited:
+            material = material + i[0].capitalize()
+
     new_sheet_name = f"{material}_{l_x}_{l_y}_{t}"
+    if len(new_sheet_name) > 31:
+        new_sheet_name = new_sheet_name[:30]
 
     R_dict = {
         "cremer": R_dict["R_cremer"],
@@ -32,6 +40,13 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
     with xw.App(visible=False) as app:
         wb = app.books.open("TP1_GRUPO X.xlsx")
         # Obtener todas las hojas
+
+        # Revisar que no haya un nombre de hoja igual:
+        current_sheets_names = [sheet.name for sheet in wb.sheets]
+
+        if new_sheet_name in current_sheets_names:
+            return "Ya hay una hoja exportada sobre este ensayo"
+
         current_sheets = wb.sheets
         if current_sheets[0].name == "Plantilla":
             new_sheet = current_sheets[0]
@@ -51,5 +66,4 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
 
         # Guardar el archivo
         wb.save()
-
-    print(f"Los datos fueron exportados correctamente en la hoja {new_sheet_name}")
+        return f"Los datos fueron exportados correctamente en la hoja {new_sheet_name}"

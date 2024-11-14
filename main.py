@@ -28,6 +28,13 @@ f_c = None
 
 canvas = None
 
+processed = False
+
+# Cambiar el valor de `processed` a False al modificar los datos de entrada
+def reset_processed(*args):
+    global processed
+    processed = False
+
 def center_mb():
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
@@ -152,7 +159,7 @@ functions_frame.rowconfigure(1, weight=1)
 
 
 def procesar():
-    global canvas, R_values
+    global canvas, R_values, processed
 
     if not validate_inputs():
         return
@@ -185,6 +192,8 @@ def procesar():
     # Actualizar los datos de las líneas sin recrear el gráfico
     plot.update_plot(lines, R_values, f_c)  # Pasamos las líneas y los nuevos valores de R
     canvas.draw()
+
+    processed = True
 
     #hacer control de errores si no hay nada seleccionado
 
@@ -273,14 +282,18 @@ def exportar():
         show_error_message("Realice un cálculo antes de exportar.")
         return
 
+    if not processed:
+        show_error_message("Los datos no fueron procesados.")
+        return
+
     material = selected_material.get()
     largo = float(largo_entry.get())
     alto = float(alto_entry.get())
     espesor = float(espesor_entry.get())
 
-    export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
+    mensaje_exportar = export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
 
-    mb = Messagebox.yesno("Datos exportados. ∖nDesea realizar informe?")
+    mb = Messagebox.yesno(f"{mensaje_exportar}. \n¿Desea realizar informe?")
 
 boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14, command=exportar)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
@@ -337,6 +350,20 @@ davy_check.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 pared_simple_check.grid(row=0, column=1, sticky="w", padx=5, pady=5)
 sharp_check.grid(row=1, column=0, sticky="w", padx=5, pady=5)
 iso_check.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+
+
+
+# Asociar los cambios en los datos de entrada a la función `reset_processed`
+selected_material.trace_add("write", reset_processed)
+largo_entry.bind("<KeyRelease>", reset_processed)
+alto_entry.bind("<KeyRelease>", reset_processed)
+espesor_entry.bind("<KeyRelease>", reset_processed)
+davy.trace_add("write", reset_processed)
+sharp.trace_add("write", reset_processed)
+iso.trace_add("write", reset_processed)
+cremer.trace_add("write", reset_processed)
+
+
 
 # Frame para el gráfico
 graph_frame = ttk.Frame(window, bootstyle="secondary")
