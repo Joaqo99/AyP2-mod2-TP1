@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import materiales
 import plot
+import export
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from acoustics_functions_Sharp import sharp_method
@@ -116,7 +117,7 @@ def procesar():
         R_values["R_davy"] = None
 
     if iso.get():
-        f_c, R_values["R_iso"] = iso_method(material, alto, largo, espesor)
+        f_c, R_values["R_iso"] = iso_method(material, largo, alto,  espesor)
     else:
         R_values["R_iso"] = None
 
@@ -196,7 +197,15 @@ boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bo
 boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
-boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14)
+def exportar():
+    material = selected_material.get()
+    largo = float(largo_entry.get())
+    alto = float(alto_entry.get())
+    espesor = float(espesor_entry.get())
+
+    export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
+
+boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14, command=exportar)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
 
 #borrar
@@ -240,7 +249,7 @@ methods_frame.rowconfigure(1, weight=1)
 davy_check = ttk.Checkbutton(methods_frame, text="Davy", variable=davy)
 pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=cremer)
 sharp_check = ttk.Checkbutton(methods_frame, text="Sharp", variable=sharp)
-iso_check = ttk.Checkbutton(methods_frame, text="ISO", variable=iso)
+iso_check = ttk.Checkbutton(methods_frame, text="ISO 12354-1", variable=iso)
 
 davy_check.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 pared_simple_check.grid(row=0, column=1, sticky="w", padx=5, pady=5)

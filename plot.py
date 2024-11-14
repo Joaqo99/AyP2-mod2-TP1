@@ -14,7 +14,7 @@ def initialize_plot():
     # Crear líneas para cada método (vacías inicialmente)
     line_davy, = ax.semilogx([], [], label="Davy", color="Violet")
     line_sharp, = ax.semilogx([], [], label="Sharp", color="Red")
-    line_iso, = ax.semilogx([], [], label="ISO", color="Blue")
+    line_iso, = ax.semilogx([], [], label="ISO 12354-1", color="Blue")
     line_cremer, = ax.semilogx([], [], label="Pared Simple", color="Green")
 
     ax.set_xlabel("Frecuencia [Hz]")
@@ -83,7 +83,7 @@ def clear_plot(lines):
 
     # Borrar la línea de frecuencia crítica si existe
     for line in ax.get_lines():
-        if line.get_label() == "Frecuencia Crítica":
+        if "Frecuencia Crítica" in line.get_label():
             line.remove()
     
     # Redibujar el gráfico sin datos y sin leyenda
