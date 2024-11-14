@@ -155,6 +155,7 @@ def nuevo_material():
                }
         
         materiales.add_material(new_mat_dict)
+        materiales_menu.add_radiobutton(label=nombre, variable=selected_material, value=nombre)
         add_mat_win.destroy()
 
     # Crear ventana emergente
