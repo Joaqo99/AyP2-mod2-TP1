@@ -8,7 +8,7 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         - material: str type object. Material name.
         - l_x: float type object. Wall width [m].
         - l_y: float type object. Wall height [m].
-        - t: float type object. Wall lenght [mm].
+        - t: float type object. Wall thickness [mm].
         - R_dict: dict type object. Transmission Loss value per method:
             - R_sharp. List type object.
             - R_davy. List type object.
@@ -20,21 +20,24 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         - Output message.
     """
 
+    # Convertir el nombre del material en formato adecuado
     if " " in material:
         material_splited = material.rsplit(" ")
-        material = ""
-        for i in material_splited:
-            material = material + i[0].capitalize()
+        material = "".join([i[0].capitalize() for i in material_splited])
 
     new_sheet_name = f"{material}_{l_x}_{l_y}_{t}"
     if len(new_sheet_name) > 31:
         new_sheet_name = new_sheet_name[:30]
 
+    # Determinar el tamaño de las listas válidas en R_dict
+    max_length = max(len(v) for v in R_dict.values() if v is not None)
+
+    # Reemplazar listas None por listas vacías de tamaño max_length
     R_dict = {
-        "cremer": R_dict["R_cremer"],
-        "sharp": R_dict["R_sharp"],
-        "davy": R_dict["R_davy"],
-        "iso": R_dict["R_iso"]
+        "cremer": R_dict["R_cremer"] if R_dict["R_cremer"] is not None else [None] * max_length,
+        "sharp": R_dict["R_sharp"] if R_dict["R_sharp"] is not None else [None] * max_length,
+        "davy": R_dict["R_davy"] if R_dict["R_davy"] is not None else [None] * max_length,
+        "iso": R_dict["R_iso"] if R_dict["R_iso"] is not None else [None] * max_length
     }
 
     # Convertir el diccionario en un DataFrame
@@ -42,9 +45,6 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
 
     with xw.App(visible=False) as app:
         wb = app.books.open("Planilla Resultados.xlsx")
-        # Obtener todas las hojas
-
-        # Revisar que no haya un nombre de hoja igual:
         current_sheets_names = [sheet.name for sheet in wb.sheets]
 
         if new_sheet_name in current_sheets_names:
@@ -63,7 +63,7 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         new_sheet.range("B3").value = l_y
         new_sheet.range("B4").value = t
 
-        # Determinar la celda para empezar a escribir los datos de R_dict
+        # Escribir los datos de R_dict
         celda_R = "B7"
         new_sheet.range(celda_R).value = df.values.tolist()
 
@@ -87,17 +87,19 @@ def informe(file_path, material, l_x, l_y, t, R_dict):
             - R_cremer. List type object.
             - R_iso. List type object.
     """
-    metodo = ""
-
     def gen_descripcion(metodo):
         descripcion = f"Predicción de índice de reducción sonora mediante método {metodo}. Pared de {material}, {l_x} m de largo, {l_y} m de alto y {t} mm de espesor"
         return descripcion
-    
+
+    # Determinar el tamaño de las listas válidas en R_dict
+    max_length = max(len(v) for v in R_dict.values() if v is not None)
+
+    # Reemplazar listas None por listas vacías de tamaño max_length
     R_dict = {
-        "cremer": R_dict["R_cremer"],
-        "sharp": R_dict["R_sharp"],
-        "davy": R_dict["R_davy"],
-        "iso": R_dict["R_iso"]
+        "cremer": R_dict["R_cremer"] if R_dict["R_cremer"] is not None else [None] * max_length,
+        "sharp": R_dict["R_sharp"] if R_dict["R_sharp"] is not None else [None] * max_length,
+        "davy": R_dict["R_davy"] if R_dict["R_davy"] is not None else [None] * max_length,
+        "iso": R_dict["R_iso"] if R_dict["R_iso"] is not None else [None] * max_length
     }
 
     hoja_metodo_informe = {
@@ -111,7 +113,6 @@ def informe(file_path, material, l_x, l_y, t, R_dict):
     df = pd.DataFrame.from_dict(R_dict, orient='index')
 
     with xw.App(visible=False) as app:
-        # Cargar la plantilla
         plantilla_path = "plantilla_informe.xlsx"
         wb = app.books.open(plantilla_path)
 
@@ -119,7 +120,7 @@ def informe(file_path, material, l_x, l_y, t, R_dict):
         wb.save(file_path)
         wb = app.books.open(file_path)  # Abrir la copia para trabajar en ella
 
-        # Determinar la celda para escribir los datos de R_dict
+        # Escribir los datos de R_dict
         celda_R = "C10"
         wb.sheets["Datos entrada"].range(celda_R).value = df.values.tolist()
 
@@ -130,4 +131,4 @@ def informe(file_path, material, l_x, l_y, t, R_dict):
 
         # Guardar y cerrar la copia del archivo
         wb.save()
-        return f"Los datos fueron exportados correctamente en {file_path}"
+        return f"Los datos fueron exportados exitosamente en {file_path}"
