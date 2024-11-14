@@ -50,8 +50,6 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         i = 0
         while new_sheet_name in current_sheets_names:
             i += 1
-
-        if new_sheet_name in current_sheets_names:
             new_sheet_name = new_sheet_name + f" ({i})"
 
         current_sheets = wb.sheets
