@@ -1,9 +1,22 @@
 Pendientes:
 
-- Hacer funciones de métodos de predicción
-- Hacer funciones de lecutra y escritura de excel
-- Hacer funciones de eventos en los botones de la GUI:
-    - Eventos de checkbuttons (terminar on_check_button_cambio)
+Lista de posibles errores:
+    - Querer procesar y que falte entrar:
+        - material
+        - dimensiones
+        - método de calculo
+        - O que cualquiera de esos datos sean inválidos
+    - Querer exportar y que no se haya realizado ningún cálculo
+    - Datos faltantes o inválidos cuando se carga se carga un nuevo material
+    
+
+
+
+
+
+
+
+
 
 
 -----------------------

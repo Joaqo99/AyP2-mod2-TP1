@@ -31,7 +31,7 @@ def initialize_plot():
 def add_critical_frequency(ax, f_c):
     # Borrar la línea de frecuencia crítica existente si la hay
     for line in ax.get_lines():
-        if line.get_label() == "Frecuencia Crítica":
+        if "Frecuencia Crítica" in line.get_label():
             line.remove()
     
     f_c_label = f"Frecuencia Crítica: {np.round(f_c, 1)} Hz"
