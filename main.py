@@ -278,9 +278,13 @@ boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
 def exportar():
-    if not any(R_values.values()):
-        show_error_message("Realice un cálculo antes de exportar.")
-        return
+    for R in R_values:
+        if R:
+            break
+        else:
+            show_error_message("Realice un cálculo antes de exportar.")
+            return
+
 
     if not processed:
         show_error_message("Los datos no fueron procesados.")
@@ -296,7 +300,7 @@ def exportar():
     x, y = center_mb()
     mb = Messagebox.yesno(f"{mensaje_exportar}. \n¿Desea realizar informe?", position=(x, y))
 
-    if mb == "Sí":
+    if mb == "Sí" or mb == "Yes" or mb=="Si":
         # Abre el diálogo de guardado y obtiene la ruta seleccionada
         file_path = asksaveasfilename(
             defaultextension=".xlsx",
