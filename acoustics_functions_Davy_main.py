@@ -65,7 +65,7 @@ def davy_method(material, l_y, l_x, espesor):
                 Avsingle_leaf += aux
             TLost = -10 * np.log10(Avsingle_leaf / averages)
 
-        R.append(TLost)
+        R.append(round(TLost,2))
 
     # Resultado final
     R = np.array(R)

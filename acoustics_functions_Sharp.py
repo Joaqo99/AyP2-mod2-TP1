@@ -73,18 +73,18 @@ def sharp_method(material, l_y, l_x, espesor):
     for i in range(len(f_to)):
         if f_to[i] < (0.5*f_c):
             r_0 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) - 5.5
-            r_sh_to.append(r_0)
+            r_sh_to.append(round(r_0,2))
         elif f_to[i] >= f_c:
             n_tot = n_in + (m_s/(485*(np.sqrt(f_to[i]))))
             r_1 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) + 10 * np.log10((2*n_tot*f_to[i])/(np.pi*f_c))
             r_2 = 10 * np.log10(1+((np.pi*m_s*f_to[i])/(ro_o*c_o))**2) - 5.5
             r_out = min(r_1,r_2)
-            r_sh_to.append(r_out)
+            r_sh_to.append(round(r_out,2))
         else:
             
             # Interpolación lineal entre r_05fc y r_fc
             r_values = r_05fc + ((r_fc - r_05fc) / (f_c - 0.5*f_c)) * (f_to[i] - f_c * 0.5)
-            r_sh_to.append(r_values)
+            r_sh_to.append(round(r_values,2))
   
 
 
