@@ -4,7 +4,8 @@ from ttkbootstrap.dialogs import Messagebox
 import materiales
 import plot
 import export
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from tkinter.filedialog import asksaveasfilename
 
 from acoustics_functions_Sharp import sharp_method
 from acoustics_functions_Davy_main import davy_method
@@ -277,7 +278,6 @@ boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
 def exportar():
-
     if not any(R_values.values()):
         show_error_message("Realice un cálculo antes de exportar.")
         return
@@ -293,7 +293,21 @@ def exportar():
 
     mensaje_exportar = export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
 
-    mb = Messagebox.yesno(f"{mensaje_exportar}. \n¿Desea realizar informe?")
+    x, y = center_mb()
+    mb = Messagebox.yesno(f"{mensaje_exportar}. \n¿Desea realizar informe?", position=(x, y))
+
+    if mb == "Sí":
+        # Abre el diálogo de guardado y obtiene la ruta seleccionada
+        file_path = asksaveasfilename(
+            defaultextension=".xlsx",
+            filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")]
+        )
+        if file_path:
+            # Llama a la función de exportación con la ruta seleccionada
+            mensaje_informe = export.informe(file_path, material, largo, alto, espesor, R_values)
+            Messagebox.ok(mensaje_informe, position=(x, y))
+
+
 
 boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14, command=exportar)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
