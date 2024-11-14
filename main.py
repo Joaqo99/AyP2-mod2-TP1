@@ -28,6 +28,15 @@ f_c = None
 
 canvas = None
 
+def center_mb():
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width // 2) - 150  # Ajustar -150 para centrar un cuadro de 300px de ancho
+    y = (screen_height // 2) - 75  # Ajustar -75 para centrar un cuadro de 150px de alto
+    return x, y
+
+
+
 def reset_entry_styles():
     largo_entry.configure(bootstyle="default")
     alto_entry.configure(bootstyle="default")
@@ -35,39 +44,17 @@ def reset_entry_styles():
 
 
 def show_error_message(message):
-    # Crear la ventana de error
-    error_win = ttk.Toplevel(window)
-    error_win.title("Error")
-    error_win.geometry("300x150")  # Tamaño de la ventana de error
-
-    # Centrar la ventana en la pantalla
-    error_win.update_idletasks()  # Asegurarse de que las dimensiones están actualizadas
-    screen_width = error_win.winfo_screenwidth()
-    screen_height = error_win.winfo_screenheight()
-    x = (screen_width - error_win.winfo_width()) // 2
-    y = (screen_height - error_win.winfo_height()) // 2
-    error_win.geometry(f"+{x}+{y}")
-
-    # Configuración de contenido en la ventana de error
-    error_label = ttk.Label(error_win, text=message, wraplength=250, bootstyle="danger")
-    error_label.pack(pady=20)
-
-    ok_button = ttk.Button(error_win, text="Aceptar", command=error_win.destroy)
-    ok_button.pack(pady=10)
-
-    # Hacer que la ventana sea modal para evitar interacciones con la ventana principal
-    error_win.transient(window)  # Indicar que es hija de la ventana principal
-    error_win.grab_set()
-    window.wait_window(error_win)  # Esperar hasta que la ventana de error se cierre
-
+    x, y = center_mb()
+    # Crear el cuadro de diálogo de error en la posición calculada
+    Messagebox.show_error(message=message, title="Error", position=(x, y))
 
 def validate_inputs():
     reset_entry_styles()
-    valid = True
+    
     # Verificar si se ha seleccionado un material
     if selected_material.get() == "Material":
         show_error_message("Seleccione un material.")
-        valid = False
+        return False  # Retorna inmediatamente al encontrar un error
     
     # Verificar si las dimensiones son válidas
     try:
@@ -78,17 +65,17 @@ def validate_inputs():
             raise ValueError
     except ValueError:
         show_error_message("Ingrese dimensiones válidas.")
-        largo_entry.configure(bootstyle="danger")  # Resaltar campo en rojo
+        largo_entry.configure(bootstyle="danger")  # Resaltar campos en rojo
         alto_entry.configure(bootstyle="danger")
         espesor_entry.configure(bootstyle="danger")
-        valid = False
+        return False  # Retorna inmediatamente al encontrar un error
     
     # Verificar si al menos un método de cálculo está seleccionado
     if not (davy.get() or sharp.get() or iso.get() or cremer.get()):
         show_error_message("Seleccione al menos un método de cálculo.")
-        valid = False
+        return False  # Retorna inmediatamente al encontrar un error
 
-    return valid
+    return True  # Si todos los campos están correctos, retorna True
 
 
 
