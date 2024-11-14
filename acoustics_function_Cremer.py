@@ -60,5 +60,5 @@ def cremer_method(material, t_m):
                  + 10 * np.log10(f_to[i] / f_c) + 10*np.log10(1-(f_c/f_to[i])) - 47)
         else:  # Esto cubre f_to[i] >= f_d
             r = 20 * np.log10(m_s * f_to[i]) - 47
-        r_to_cremer.append(r)
+        r_to_cremer.append(round(r,2))
     return f_c, r_to_cremer
