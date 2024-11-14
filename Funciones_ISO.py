@@ -10,7 +10,6 @@ f_to = [20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250
 
 def sigma(frec_critica, l1, l2):
 
-    eps = np.finfo(float).eps
 
     sigmalist = []
 
@@ -20,10 +19,10 @@ def sigma(frec_critica, l1, l2):
 
         sig1 = 1/np.sqrt(1-(frec_critica/(f_to[i])))
         sig2 = 4*l1*l2*((f_to[i])/c_o)**2
-        sig3 = np.sqrt((np.pi*(f_to[i])*(l1+l2))/(16*c_o))
+        sig3 = np.sqrt((2*np.pi*(f_to[i])*(l1+l2))/(16*c_o))
         lmda = np.sqrt((f_to[i])/frec_critica)
-        delta1 = ((1-lmda**2)*np.log((1+lmda)/(1-lmda + eps))+2*lmda)/(4*((np.pi)**2)*(1-lmda**2 + eps)**1.5)
-        delta2 = ((8*c_o**2)*(1-2*(lmda)**2))/((frec_critica**2)*(np.pi**4)*l1*l2*lmda*(np.sqrt(1-(lmda**2)+eps)))
+        delta1 = ((1-lmda**2)*np.log((1+lmda)/(1-lmda ))+2*lmda)/(4*((np.pi)**2)*(1-lmda**2 )**1.5)
+        delta2 = ((8*c_o**2)*(1-2*(lmda)**2))/((frec_critica**2)*(np.pi**4)*l1*l2*lmda*(np.sqrt(1-(lmda**2))))
 
         if f11 <= (frec_critica/2):
             if f_to[i] >= frec_critica:
@@ -32,7 +31,7 @@ def sigma(frec_critica, l1, l2):
             else:                    #si f < fc
                 if f_to[i] > frec_critica/2:
                     delta2 = 0
-                sigma = ((2*(l1+l2)*c_o*delta1)/(l1*l2*frec_critica))+delta2
+                sigma = ((2*(l1+l2)*c_o*delta1)/(l1*l2*frec_critica)) + delta2
                 
             if f_to[i] < f11 < frec_critica/2 and sigma > sig2:
                 sigma = sig2
@@ -55,7 +54,7 @@ def sigma(frec_critica, l1, l2):
             if sigma > 2:
                 sigma = 2
             sigmalist.append(sigma)    
-    
+
     return sigmalist
 
 def nabla_fun(k_o, l_x, l_y):
@@ -93,7 +92,8 @@ def sigma_f_fun(nabla, k_o, l_x, l_y):
         sigma_f_i = 0.5*(np.log(k_o[i]*((l_x*l_y)**(1/2)))-nabla[i])
         if sigma_f_i > 2:
             sigma_f_i = 2    
-        sigma_f.append(sigma_f_i)    
+        sigma_f.append(sigma_f_i)   
+    
     return sigma_f
 
 

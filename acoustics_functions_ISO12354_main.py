@@ -70,7 +70,7 @@ def iso_method(material, l_x, l_y, t_m):
             tau = tau_a*(tau_b*(np.pi*f_c/(2*f_to[i])))
             r_i = -10*np.log10(tau)
             r_to_iso.append(round(r_i,2))
-        elif f_to[i] < f_c:
+        elif f_to[i] < f_c :
             tau = tau_a*(2*sigma_f[i] + (((l_x+l_y)**2)/(l_x**2+l_y**2))*((f_c/f_to[i])**(1/2))*tau_b)
             r_i = -10*np.log10(tau)
             r_to_iso.append(round(r_i,2))
@@ -78,5 +78,6 @@ def iso_method(material, l_x, l_y, t_m):
             tau = tau_a*((tau_b*np.pi)/2)
             r_i = -10*np.log10(tau)
             r_to_iso.append(round(r_i,2))
+            
     return f_c, r_to_iso
 
