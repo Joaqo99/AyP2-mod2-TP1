@@ -1,16 +1,29 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import materiales
-from acoustics_functions_Sharp import sharp_method
 import plot
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import export
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
+from acoustics_functions_Sharp import sharp_method
+from acoustics_functions_Davy_main import davy_method
+from acoustics_function_Cremer import cremer_method
+from acoustics_functions_ISO12354_main import iso_method
 
 
 # Ventana principal
 window = ttk.Window(themename="superhero")
 window.title("Transmission Loss Calculator")
-window.geometry("1400x800")
+window.geometry("1400x900")
+
+R_values = {
+    "R_sharp": None,
+    "R_davy": None,
+    "R_iso": None,
+    "R_cremer": None
+}
+
+f_c = None
 
 canvas = None
 
@@ -36,9 +49,6 @@ frame_inferior.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
 
 # Menubutton para selección de materiales
 
-def seleccion_material(x):
-    pass
-
 selected_material = ttk.StringVar()
 largo_var = ttk.StringVar()
 ancho_var = ttk.StringVar()
@@ -55,7 +65,7 @@ materiales_menu_button["menu"] = materiales_menu
 # Lista de materiales
 materials_list = materiales.get_materials_list()
 for mat in materials_list:
-    materiales_menu.add_radiobutton(label=mat, variable=selected_material, command=lambda mat=mat: seleccion_material(mat), value=mat)
+    materiales_menu.add_radiobutton(label=mat, variable=selected_material, value=mat)
 
 
 
@@ -87,44 +97,39 @@ functions_frame.columnconfigure(1, weight=1)
 functions_frame.rowconfigure(0, weight=1)
 functions_frame.rowconfigure(1, weight=1)
 
-# procesar
+
 
 def procesar():
-    global canvas
+    global canvas, R_values
     material = selected_material.get()
     largo = float(largo_entry.get())
     alto = float(alto_entry.get())
     espesor = float(espesor_entry.get())
 
     if sharp.get():
-        f_c, R_sharp = sharp_method(material, alto, largo, espesor)
-        #plotear el gráfico
-        print(R_sharp)
+        f_c, R_values["R_sharp"] = sharp_method(material, alto, largo, espesor)
     else:
-        R_sharp = False
+        R_values["R_sharp"] = None
+    
     if davy.get():
-        pass
+        f_c, R_values["R_davy"] = davy_method(material, alto, largo, espesor)
     else:
-        R_davy = False
+        R_values["R_davy"] = None
 
     if iso.get():
-        pass
+        f_c, R_values["R_iso"] = iso_method(material, largo, alto,  espesor)
     else:
-        R_iso = False
+        R_values["R_iso"] = None
 
     if cremer.get():
-        pass
+        f_c, R_values["R_cremer"] = cremer_method(material, espesor)
     else:
-        R_cremer = False
+        R_values["R_cremer"] = None
 
-    if canvas is not None:
-        canvas.get_tk_widget().destroy()
-
-    graph_fig, ax = plot.plot_R(R_sharp=R_sharp, R_cremer=R_cremer, R_iso=R_iso, R_davy=R_davy)
-    canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
+    # Actualizar los datos de las líneas sin recrear el gráfico
+    plot.update_plot(lines, R_values, f_c)  # Pasamos las líneas y los nuevos valores de R
     canvas.draw()
 
-    canvas.get_tk_widget().pack(expand=True)
     #hacer control de errores si no hay nada seleccionado
 
 
@@ -188,15 +193,42 @@ def nuevo_material():
     confirmar_button.grid(row=5, column=0, columnspan=2, pady=10)
     
 
-#boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
-#boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
+boton_agregar_material = ttk.Button(functions_frame, text="Agregar Material", bootstyle=SECONDARY, padding=3, width=14, command=nuevo_material)
+boton_agregar_material.grid(row=0, column=1, padx=5, pady=5)
 
 #exportar
-boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14)
+def exportar():
+    material = selected_material.get()
+    largo = float(largo_entry.get())
+    alto = float(alto_entry.get())
+    espesor = float(espesor_entry.get())
+
+    export.exportar_datos(material, largo, alto, espesor, R_values, f_c)
+
+boton_exportar = ttk.Button(functions_frame, text="Exportar", bootstyle=SECONDARY, padding=3, width=14, command=exportar)
 boton_exportar.grid(row=1, column=0, padx=5, pady=5)
 
 #borrar
-boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=3, width=14)
+
+def borrar():
+    # Llamar a la función clear_plot para borrar las líneas del gráfico
+    plot.clear_plot(lines)
+    
+    # Limpiar las entradas 
+    largo_entry.delete(0, "end")
+    alto_entry.delete(0, "end")
+    espesor_entry.delete(0, "end")
+    selected_material.set("Material")
+
+    davy.set(0)
+    iso.set(0)
+    cremer.set(0)
+    sharp.set(0)
+
+    # Actualizar el gráfico
+    canvas.draw()
+
+boton_borrar = ttk.Button(functions_frame, text="Borrar", bootstyle=DANGER, padding=3, width=14, command=borrar)
 boton_borrar.grid(row=1, column=1, padx=5, pady=5)
 
 ###########################
@@ -217,7 +249,7 @@ methods_frame.rowconfigure(1, weight=1)
 davy_check = ttk.Checkbutton(methods_frame, text="Davy", variable=davy)
 pared_simple_check = ttk.Checkbutton(methods_frame, text="Pared Simple", variable=cremer)
 sharp_check = ttk.Checkbutton(methods_frame, text="Sharp", variable=sharp)
-iso_check = ttk.Checkbutton(methods_frame, text="ISO", variable=iso)
+iso_check = ttk.Checkbutton(methods_frame, text="ISO 12354-1", variable=iso)
 
 davy_check.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 pared_simple_check.grid(row=0, column=1, sticky="w", padx=5, pady=5)
@@ -227,6 +259,12 @@ iso_check.grid(row=1, column=1, sticky="w", padx=5, pady=5)
 # Frame para el gráfico
 graph_frame = ttk.Frame(window, bootstyle="secondary")
 graph_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=10, pady=5)
+
+# Inicializar gráfico y curvas
+graph_fig, ax, lines = plot.initialize_plot()  # Creamos el gráfico sin datos
+canvas = FigureCanvasTkAgg(graph_fig, master=graph_frame)
+canvas.draw()
+canvas.get_tk_widget().pack(expand=True)
 
 
 window.mainloop()
