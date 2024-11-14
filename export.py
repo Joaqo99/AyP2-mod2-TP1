@@ -47,8 +47,12 @@ def exportar_datos(material, l_x, l_y, t, R_dict, f_c):
         wb = app.books.open("Planilla Resultados.xlsx")
         current_sheets_names = [sheet.name for sheet in wb.sheets]
 
+        i = 0
+        while new_sheet_name in current_sheets_names:
+            i += 1
+
         if new_sheet_name in current_sheets_names:
-            return "Ya hay una hoja exportada sobre este ensayo"
+            new_sheet_name = new_sheet_name + f" ({i})"
 
         current_sheets = wb.sheets
         if current_sheets[0].name == "Plantilla":
